@@ -1,5 +1,6 @@
 import axios from 'axios'
 import router from '../router'
+import * as stores from '../store/methods'
 import { Message, Loading } from 'element-ui'
 
 let loadingInstance = null //这里是loading
@@ -50,6 +51,9 @@ Service.interceptors.response.use(response => {
     type: 'error',
     duration: 3 * 1000
   })
+  // 推出登录
+  stores.LOGIN_OUT()
+  router.push({path:'/login'});
   loadingInstance.close()
   return Promise.reject(error)
 })

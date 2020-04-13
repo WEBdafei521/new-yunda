@@ -5,14 +5,19 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import LOGIN_OUT from './store/methods'
-Vue.config.productionTip = false
-Vue.use(LOGIN_OUT);
+import store from './store'//引入store
+Vue.config.productionTip = false;
+// 全局背景颜色
+import VueParticles from 'vue-particles'
+Vue.use(VueParticles)
+
+
+// 全局配置注册Element ui组件
 Vue.use(ElementUI);
-/* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

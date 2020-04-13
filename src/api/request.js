@@ -1,4 +1,4 @@
-import {Service} from './Service'
+import {Service} from './Server'
 export function loginIn(data) {
   return Service({
     url: '/sys/login',
