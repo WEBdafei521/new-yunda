@@ -71,7 +71,7 @@
           
         </div>
         <!-- main - main -->
-        <div class="l-main-index">
+        <div class="l-main-index" :style="{width:'100%',height:screenHeight-46+'px',}">
           <transition>
             <router-view/>
           </transition>
@@ -99,6 +99,7 @@ export default {
       visible1:false,
       userInfo:{},
       dialogFormVisible:false,
+      screenHeight:document.documentElement.clientHeight || document.body.clientHeight
     };
   },
  created(){
@@ -154,8 +155,8 @@ export default {
         var menuList = this.menuList;
         // 解析url
         var urls = stores.getMenUrl(menuList,key)
-        console.log(urls)
         this.default_active_index = key;
+        this.$router.push("/"+urls)
       },
    // 请求菜单数据
     navList(){
@@ -168,15 +169,23 @@ export default {
       })
     },
  },
- mounted(){},
+ mounted(){
+   var _this = this
+    window.onresize = function () { // 定义窗口大小变更通知事件
+      _this.screenHeight = document.documentElement.clientHeight || document.body.clientHeight // 窗口高度
+    }
+ },
  computed:{},
 }
 </script>
 <style scoped>
   .l-main-index{
-    padding: 8px 0 0 8px;
+    width: 100%;
+    height:100%;
+    padding: 8px 8px 8px 8px;
     box-sizing: border-box;
     background: #7d8185;
+    overflow: auto;
   }
   .l-color-back-white{
     color: #fff;

@@ -1,8 +1,8 @@
 <!--  -->
 <template>
   <div>
-      <div class="my_display">
-        <h5 style="color:#555;margin-right:10px;">加油站名</h5>
+      <div class="l-display">
+        <h5 style="color:#fff;margin-right:10px;">加油站名</h5>
         <el-input v-model="input" style="width:220px;height:35px;margin-right:10px;" clearable placeholder="请输入内容"></el-input>
         <el-button type="primary" style="height:40px;line-height:0px;">查询</el-button>
       </div>
@@ -543,5 +543,8 @@ export default {
     height: 178px;
     display: block;
   }
-
+  .l-display{
+    display: flex;
+    align-items: center;
+  }
 </style>

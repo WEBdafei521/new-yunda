@@ -2,7 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // import Yunda from '@/components/HelloWorld'
 import store from '../store'//引入store
-
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
 Vue.use(Router)
 
 const router = new Router({
@@ -28,6 +31,14 @@ const router = new Router({
             isLogin:true
           },
           component:  resolve => {require(['../page/main'], resolve)},
+        },
+        {
+          path: '/modules/yunda/depart',
+          name:"depart",
+          meta:{
+            isLogin:true
+          },
+          component:  resolve => {require(['../page/modules/yunda/depart'], resolve)},
         },
       ]
     },

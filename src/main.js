@@ -7,6 +7,11 @@ import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
+// 引入animate.css
+import animated from 'animate.css' // npm install animate.css --save安装，在引入 
+Vue.use(animated)
+
+
 import store from './store'//引入store
 import { Container,Message, MessageBox,} from 'element-ui'
 Vue.config.productionTip = false;
