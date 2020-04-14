@@ -1,6 +1,8 @@
 import router from '../router'
 import store from "./index"
+import {indexNav, updatePwd,downLoadImg,mainInfo} from '../api/request'
 export function LOGIN_OUT(Vue, options) {
+    console.log("调用了LOGIN_OUT")
         sessionStorage.removeItem('tokens');
         sessionStorage.removeItem('itemPath');
         sessionStorage.removeItem('indexPath');
@@ -10,7 +12,7 @@ export function LOGIN_OUT(Vue, options) {
         store.dispatch("REMOTE_TOKENS")
         store.dispatch("REMOTE_USERS_INFO")
         store.dispatch("REMOTE_USERS_DEPT")
-        router.push({path:'/'});
+        router.push({path:'/login'});
 };
 // 拼接导航栏数据结构
 export function setMenuList(menuList){
@@ -36,7 +38,113 @@ export function getMenUrl(menuList,key){
         }
     }
     var urlArr = url.split(".")[0]
-    console.log(urlArr)
+    return urlArr
+}
+export function comfirms(oldPwd,newPwd){
+    var   _this = this;
+    var isCheck = _this.checkedInpVal(oldPwd,newPwd)
+    if(isCheck){
+      updatePwd({password:oldPwd,newPassword:newPwd}).then(res => {
+        if(res.code!=0){
+            this.$message({
+              showClose: true,
+              message: res.msg,
+              type: 'error'
+            });
+        }else{
+          this.$message({
+            showClose: true,
+            message: res.msg,
+            type: 'success'
+          });
+          LOGIN_OUT()
+        }
+      })
+    }
+  }
+// 更改密码 检验新旧密码
+export function checkedInpVal(oldPwd,newPwd){
+    if(oldPwd.length == 0 || newPwd.length == 0){
+      this.$message({
+        showClose: true,
+        message: '输入格式不正确，请重新输入',
+          type: 'warning'
+      });
+      return false;
+    }else if(oldPwd===newPwd){
+      this.$message({
+        showClose: true,
+        message: '两次密码不能重复，请重新输入',
+          type: 'warning'
+      });
+      this.form.newPwd='';
+      this.form.oldPwd='';
+      return false;
+    }else if(newPwd.length<6){
+      this.$message({
+        showClose: true,
+        message: '新密码长度不能小于6位',
+          type: 'warning'
+      });
+      return false;
+    }else{
+      return true;
+    }
+  }
+  // 获取用户个人信息
+export function getLoginUser(){
+    var user = JSON.parse(localStorage.getItem("yd_user_info"))
+    return user;
+}
+export function getLoginDept(){
+  var dept = JSON.parse(localStorage.getItem("yd_user_dept"))
+  return dept;
+}
+// 获取油站列表
+export function getStationPosition(){
+  return new Promise((resolve, reject) =>{  
 
-    return url
+  var userInfo = getLoginUser();
+  var userDept = getLoginDept();
+   var orgCode =  userInfo.orgCode;
+   var type="0";//表示是加油站管理人员
+		if(orgCode.length==8){
+			type="1";
+		}else if(orgCode.length==4){
+			type="2";
+		}else{
+			//not  do  anything
+    }
+    mainInfo(type).then(res=>{
+      var stationArr = []
+      // console.log(res)
+      if(type=="2" && res.list_controller){
+        for(var item of res.list_controller){
+          if(item.lon > 1 && item.lat > 1 ){
+            for(var items of userDept){
+              if(items.orgCode == item.orgCode){
+                // console.log(item)
+                // console.log(items)
+                var obj = {}
+                obj.stationName = items.departname
+                obj.people = items.attn
+                obj.peoplePhone = items.mobile
+                obj.controllerNo = item.controllerNo
+                obj.email = items.email
+                obj.address = items.address
+                obj.lat = item.lat;
+                obj.lon = item.lon;
+                stationArr.push(obj)
+              }
+            }
+          }
+        }
+      }
+      var arr = JSON.stringify(stationArr)
+      // localStorage.setItem("stationPosition",arr)
+      resolve(arr);
+      // console.log(arr)
+      // return stationArr
+    })
+  });
 }

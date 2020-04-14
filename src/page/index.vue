@@ -21,41 +21,61 @@
         </el-menu>
       </div> 
       <!-- main -->
-      <div class="l-main-title"> 
-          <!-- 历史标签 -->
-          <div class="l-main-title-left">
-            <div @click="openClose" class="l-main-title-close" style="fontSize:21px;">
-              <i class="el-icon-s-fold"></i>
-            </div>
-            <div class="l-history_label">
-              <div class="l-menu-name">主页</div>
-              <div class="l-menu-del">
-                <i class="el-icon-close"></i>
+      <div class="l-main">
+        <!-- main - title -->
+        <div class="l-main-title l-color-back-white"> 
+          <div>
+            <!-- 历史标签 -->
+            <div class="l-main-title-left l-color-back-white">
+              <div @click="openClose" class="l-main-title-close " style="fontSize:21px;">
+                <i class="el-icon-s-fold"></i>
               </div>
+              
             </div>
-          </div>
-          <!-- 用户的信息 -->
-          <div class="l-main-title-right">
-            <!-- 用户设置 -->
-            <div>
+            <!-- 用户的信息 -->
+            <div class="l-main-title-right">
+              <!-- 用户设置 -->
+              <div>
+                  <el-popover
+                    placement="bottom"
+                    width="240"
+                    v-model="visible">
+                    <div>
+                        <div>手机号：{{userInfo.mobile}}</div>
+                        <div>电子邮箱：{{userInfo.email}}</div>
+                        <div style="text-align: center; margin: 0;margin-top:20px;" class="my_display">
+                          <el-button @click="dialogFormVisible = true"><i class="el-icon-setting"></i>修改密码</el-button>
+                          <el-button type="danger" @click="loginOuts"><i class="el-icon-warning"></i>退出登录</el-button>
+                        </div>
+                    </div>
+                    <el-button style="border:0;font-size:14px;" class="l-color-back-white" slot="reference">您好，<span style="fontWeight:600;" class="color:#333333;">{{userInfo.username}}</span> <i class="el-icon-arrow-down"></i> </el-button>
+                  </el-popover>
+              </div>
+              <!-- 生成邀请码 -->
+              <div class="l-main-title-download">
                 <el-popover
-                  placement="left"
-                  width="240"
-                  v-model="visible">
-                  <div>
-                      <div>手机号：18736911636</div>
-                      <div>电子邮箱：591094678@qq.com</div>
-                      <div style="text-align: center; margin: 0;margin-top:20px;" class="my_display">
-                        <el-button @click="dialogFormVisible = true"><i class="el-icon-setting"></i>修改密码</el-button>
-                        <el-button type="danger" @click="loginOut"><i class="el-icon-warning"></i>退出登录</el-button>
-                      </div>
-                  </div>
-                  <el-button style="color:#999;border:0;font-size:14px;" slot="reference">您好，<span style="fontWeight:600;color:#333333;">admin</span> <i class="el-icon-arrow-down"></i> </el-button>
-                </el-popover>
+                    placement="bottom"
+                    width="240"
+                    v-model="visible1">
+                    <div class="l-yqm">
+                        <div>机构编码：{{userInfo.orgCode}}</div>
+                        <div style="text-align: center;padding:8px 0;">
+                          <el-button @click="download"><i class="el-icon-office-building"></i>生成邀请码</el-button>
+                        </div>
+                    </div>
+                    <el-button style="border:0;font-size:14px;" class="l-color-back-white" slot="reference"> <i style="fontWeight:600;" class="el-icon-office-building "></i> {{userInfo.departName}}</el-button>
+                  </el-popover>
               </div>
-            <!-- 生成邀请码 -->
-            <div class="l-main-title-download">div</div>
+            </div>
           </div>
+          
+        </div>
+        <!-- main - main -->
+        <div class="l-main-index">
+          <transition>
+            <router-view/>
+          </transition>
+        </div>
       </div>
 
     </el-container>
@@ -63,6 +83,7 @@
 </template>
 
 <script>
+import router from '../router'
 import * as stores from '../store/methods'
 import {indexNav, updatePwd,downLoadImg} from '../api/request'
 export default {
@@ -71,25 +92,69 @@ export default {
     return {
       isCollapse: false,
       menuList:[],
-      default_active_index:"0-0"
+      default_active_index:"0-0",
+      // 用户信息弹框
+      visible:false,
+      // 邀请码下载框
+      visible1:false,
+      userInfo:{},
+      dialogFormVisible:false,
     };
   },
  created(){
+   this.userInfo = JSON.parse(this.$store.getters.get_yd_user_info);
    this.navList()
  },
  methods:{
+    // 确定修改密码
+      
+      // 退出登录
+      loginOuts(){
+        var _this=this;
+         _this.$confirm('此操作将退出登录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '已退出!'
+          });
+          stores.LOGIN_OUT()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+      },
+    // 取消修改密码
+      cancels(){
+        var _this = this;
+        _this.form.oldPwd = '';
+        _this.form.newPwd = '';
+        _this.dialogFormVisible = false;
+      },
       //左侧导航栏  
       openClose(){
         this.isCollapse = ! this.isCollapse;
       },
+      // 下载邀请码
+      download(){
+        location.href = "http://you.yunfeiyang.com:8080/sys/gen/downloadImg"
+      },
+      // 退出登录
       loginOut(){},
+      // 校验修改密码信息
+      
       handleOpen(key, keyPath) {
         // console.log(key, keyPath);
       },
       handleSelect(key, keyPath) {
         var menuList = this.menuList;
         // 解析url
-        stores.getMenUrl(menuList,key)
+        var urls = stores.getMenUrl(menuList,key)
+        console.log(urls)
         this.default_active_index = key;
       },
    // 请求菜单数据
@@ -108,9 +173,30 @@ export default {
 }
 </script>
 <style scoped>
+  .l-main-index{
+    padding: 8px 0 0 8px;
+    box-sizing: border-box;
+    background: #7d8185;
+  }
+  .l-color-back-white{
+    color: #fff;
+    background: rgb(84, 92, 100);
+    
+  }
+  ::-webkit-scrollbar {
+    width: 1px;
+    height: 6px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0px rgba(240, 240, 240, 1);
+  } 
+
   .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width:201px;
+    width:220px;
     height: 100vh;
+    overflow: auto;
+  }
+  .el-menu{
+    border-right: 0;
   }
   .el-menu--collapse{
     height:100vh;
@@ -120,11 +206,17 @@ export default {
     background-color:#218062 !important;
   } 
   .l-main-title{
-    height: 40px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+  .l-main-title>div{
+    height: 45px;
     width: 100%;
     padding: 0 30px 0 0;
-    background-color: #fff;
-    border-bottom: 1px solid #e2e2e2;
+    box-sizing: border-box;
+    border-bottom: 1px solid #999;
+    box-shadow:1px 1px 7px #000000;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -138,39 +230,25 @@ export default {
     margin: 0 8px;
     cursor: pointer;
   }
-  .l-history_label{
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: #7c7b7b;
-    border: 1px solid #eeeeee;
-    padding: 0 3px;
-    
-  }
-  .l-menu-name{
-    text-align: center;
-    padding:0 16px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-  }
+ 
 
-  .l-menu-del{
-    width: 18px;
-    height: 18px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 100%;
-    border: 1px solid #e3e3e3;
-  }
   .l-main-title-right{
     display: flex;
     justify-content: center;
     align-items: center;
   }
   .l-main-title-download{
-    width: 100px;
+    /* width: 230px; */
     text-align: center;
+  }
+  .l-main{
+    width: 100%;
+    height: 100%;
+  }
+  .l-yqm{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
   }
 </style>

@@ -120,8 +120,7 @@ export default {
 					          localStorage.setItem("yd_user_info", JSON.stringify(res.user));
                     localStorage.setItem("yd_user_dept", JSON.stringify(res.dept));
                     localStorage.setItem("tokens", res.token);
-                    _this.$router.push('/')
-                    console.log("登录成功了")
+                    _this.$router.push('/main')
                     
                   
 		        }else{

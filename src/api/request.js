@@ -6,19 +6,21 @@ export function loginIn(data) {
     params: data
   })
 }
+// 获取菜单栏
 export function indexNav(data) {
   return Service({
     url: '/sys/menu/nav',
     method:"post"
   })
 }
-
+// 获取地图坐标定位
 export function mainInfo(data) {
   return Service({
     url: '/yunda/yfysdepart/initMainInfo?type='+data,
     method:"post"
   })
 }
+// 更改密码
 export function updatePwd(data) {
   return Service({
     url: 'sys/user/password',
@@ -26,7 +28,7 @@ export function updatePwd(data) {
     params:data
   })
 }
-
+// 加油列表
 export function addOilList(data) {
   return Service({
     url: 'yunda/yfysdepart/getList/station',

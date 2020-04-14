@@ -46,13 +46,13 @@ const actions = { //异步调用mutation中的方法，使用方法：this.$stor
         context.commit('SET_USER_DEPT',userDept);
     },
     REMOTE_TOKENS(context) {
-        context("REMOTE_TOKEN")
+        context.commit("REMOTE_TOKEN")
     },
     REMOTE_USERS_INFO(context) {
-        context("REMOTE_USER_INFO")
+        context.commit("REMOTE_USER_INFO")
     },
     REMOTE_USERS_DEPT(context) {
-        context("REMOTE_USER_DEPT")
+        context.commit("REMOTE_USER_DEPT")
     }
 };
 const store = new Vuex.Store({
