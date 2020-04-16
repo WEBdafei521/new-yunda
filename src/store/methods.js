@@ -1,6 +1,7 @@
 import router from '../router'
 import store from "./index"
-import {indexNav, updatePwd,downLoadImg,mainInfo} from '../api/request'
+import { updatePwd,mainInfo} from '../api/request'
+import {getMenuTree} from '../api/role/index'
 export function LOGIN_OUT(Vue, options) {
     console.log("调用了LOGIN_OUT")
         sessionStorage.removeItem('tokens');
@@ -141,10 +142,46 @@ export function getStationPosition(){
         }
       }
       var arr = JSON.stringify(stationArr)
-      // localStorage.setItem("stationPosition",arr)
       resolve(arr);
-      // console.log(arr)
-      // return stationArr
     })
+  });
+}
+
+// 获取分配权限列表，并处理成符合element中Tree支持的格式
+export function getMenuTrees(){
+  return new Promise((resolve, reject) =>{  
+    getMenuTree().then(res =>{
+      let regionObj = {}
+      res.forEach(item => {
+        regionObj[item['parentId']] = regionObj[item['parentId']] || []
+        regionObj[item['parentId']].push(item)
+      })
+      var arr = regionObj[0];
+      arr.forEach((item, index) => {
+        item.children = regionObj[item.menuId] ? regionObj[item.menuId] : []
+        item.children.forEach(initem => {
+          initem.children = regionObj[initem.menuId] ? regionObj[initem.menuId] : []
+          if (initem.children.length > 0) {
+            initem.children.forEach(sunitem => {
+              sunitem.children = regionObj[sunitem.menuId] ? regionObj[sunitem.menuId] : []
+            })
+          }
+        })
+      })
+      for (var value of res) {
+        value.id=value.menuId
+        value.label=value.name
+        for(var items of value.children){
+          items.id=items.menuId
+          items.label=items.name
+          for(var item of items.children){
+            item.id=item.menuId
+            item.label=item.name
+          }
+        }
+      }
+      resolve(arr);
+      
+    })  
   });
 }

@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import {list, driverList} from '../../../api/yfybuserveh/index';
+// import {list, driverList} from '../../../api/yfybuserveh/index';
 export default {
   data () {
     const generateData = _ => {

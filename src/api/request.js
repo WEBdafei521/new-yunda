@@ -28,7 +28,7 @@ export function updatePwd(data) {
     params:data
   })
 }
-// 加油列表
+// 加油站列表
 export function addOilList(data) {
   return Service({
     url: 'yunda/yfysdepart/getList/station',
@@ -40,9 +40,10 @@ export function changeStatus(data) {
   return Service({
     url: 'yunda/yfysdepart/update/station',
     method:"post",
-    params:data
+    data:data
   })
 }
+
 export function downLoadImg(data) {
   return Service({
     url: 'sys/gen/downloadImg',

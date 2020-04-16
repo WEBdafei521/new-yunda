@@ -7,17 +7,25 @@ export function departList(data) {
     params: data
   })
 }
-export function updateRow(data) {
+export function getUserList(data) {
   return Service({
-    url: "yunda/yfysdepart/update/station",
+    url: "sys/role/list",
     method:"post",
     data: data,
     
   })
 }
-export function saveDepart(data) {
+export function getMenuTree(data) {
   return Service({
-    url: "yunda/yfysdepart/save/depart",
+    url: "sys/menu/list",
+    method:"post",
+    data: data,
+    
+  })
+}
+export function setUserInfo(data) {
+  return Service({
+    url: "sys/role/save",
     method:"post",
     data: data,
     

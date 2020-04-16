@@ -1,54 +1,51 @@
 <!--  -->
 <template>
   <div>
-      <div class="l-display">
-        <h5 style="color:#fff;margin-right:10px;">加油站名</h5>
-        <el-input v-model="input" style="width:220px;height:35px;margin-right:10px;" clearable placeholder="请输入内容"></el-input>
-        <el-button type="primary" style="height:40px;line-height:0px;">查询</el-button>
-      </div>
-      <h1 class="animated slideInRight  delay-.1s">animate  fadeInLeft</h1>
       
-      <div>
+      <div class="animated slideInRight  delay-1s">
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-          <el-tab-pane label="加油站列表" name="OliList"> 
+          <el-tab-pane label="加油站列表" name="OliList" class=""> 
+            <div class="l-display">
+              <h5 style="color:#000;margin:0 10px;">部门名称</h5>
+              <el-input v-model="inputval" style="width:220px;height:35px;margin-right:10px;" clearable placeholder="请输入内容"></el-input>
+              <el-button type="primary" style="height:40px;line-height:0px;" @click="searchDepart">查询</el-button>
+            </div>
             <div class="block">
               <el-table
                 :data="tableData"
-                border
                 style="width: 100%">
                 <el-table-column
-                  className="animated fadeInLeft  delay-1s"
-                  fixed
+                  className="animated slideInRight  delay-1s"
                   prop="e3"
                   label="部门编号"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated fadeInLeft  delay-1s"
+                  className="animated slideInRight  delay-1s"
                   prop="orgCode"
                   label="机构编号"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated fadeInLeft  delay-1s"
+                  className="animated slideInRight  delay-1s"
                   prop="departname"
                   label="部门名称"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated fadeInLeft  delay-1s"
+                  className="animated slideInRight  delay-1s"
                   prop="attn"
                   label="联系人"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated fadeInLeft  delay-1s"
+                  className="animated slideInRight  delay-1s"
                   prop="mobile"
                   label="手机号"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated fadeInLeft  delay-1s"
+                  className="animated slideInRight  delay-1s"
                   prop="zip"
                   label="状态"
                   max-width="150">
@@ -58,11 +55,11 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                  className="animated fadeInLeft  delay-1s"
+                  className="animated slideInRight  delay-1s"
                   label="操作"
                   max-width="150">
                   <template slot-scope="scope">
-                    <el-button  size="mini" type="primary" @click="updata(scope.$index, scope.row)">修改</el-button>
+                    <el-button type="primary" @click="updata(scope.$index, scope.row)">修改</el-button>
                     <el-button v-if="scope.row.status == '0' " size="mini" type="primary" @click="updateStatusRow(scope.$index, scope.row)">启用</el-button>
                     <el-button v-if="scope.row.status == '1' " size="mini" type="danger" @click="updateStatusRow(scope.$index, scope.row)">停用</el-button> 
                   </template>
@@ -82,7 +79,7 @@
             
           </el-tab-pane>
 
-          <el-tab-pane label="添加" name="addList">
+          <el-tab-pane :label="oilType" name="addList">
             <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
               <!-- 部门编号 -->
               <el-form-item label="部门编号" prop="e3" class="animated slideInRight  delay-.1s">
@@ -177,7 +174,7 @@
 </template>
 
 <script>
-import {departList, updateRow, saveDepart} from '../../../api/depart/index';
+import {departList, updateRow, saveDepart,searchDepartList} from '../../../api/depart/index';
 import city1 from '../../js/city.json';
 import province from '../../js/province.json'
 export default {
@@ -215,16 +212,16 @@ export default {
         }, 1000);
       };
       var checkEmail = (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error('电子邮箱不能为空'));
-        }else{
-          var reg = /^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/;
-          if (reg.test(value)) {
+        // if (!value) {
+        //   return callback(new Error('电子邮箱不能为空'));
+        // }else{
+        //   var reg = /^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/;
+        //   if (reg.test(value)) {
             callback();
-          } else {
-            callback(new Error('请输入正确的邮箱'));
-          }
-        }
+        //   } else {
+        //     callback(new Error('请输入正确的邮箱'));
+        //   }
+        // }
         
       };
       var checkActivity = (rule, value, callback) => {
@@ -241,7 +238,7 @@ export default {
       //登录token
       var token = localStorage.getItem("tokens");
     return {
-      
+      oilType:"添加",
       // 省份
       provinces: [],
       provinceValue: '',
@@ -260,7 +257,7 @@ export default {
         getDepartNo: "yunda/yfysdepart/get/departNo?type=3",
         uploadActionUrl: baseURL +"yunda/yfysdepart/uploadlogo?token="+token
       },
-      input:"",
+      inputval:"",
       activeName: 'OliList',
       sizeLength:0,
       currentPage:"1",
@@ -360,6 +357,10 @@ export default {
 
 
   methods: {
+    // 查询油站列表
+    searchDepart(){
+      this.depart(this.inputval)
+    },
     // 选择省份onProvinceChange
     onProvinceChange(e){
       this.ruleForm.e1=e;
@@ -428,6 +429,7 @@ export default {
         saveDepart(this.ruleForm).then(res =>{
           if(res.code==0){
             this.activeName="addList"
+            this.oilType = "添加"
             this.ruleForm={
               address:"",
               attn:"",
@@ -449,8 +451,12 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    updata(e){
-      console.log(e)
+    // 修改部门信息
+    updata(index,row){
+      this.ruleForm = row;
+      this.activeName = "addList"
+      this.oilType = "修改"
+      this.imageUrl = "http://you.yunfeiyang.com"+row.logo
     },
     // 停用
     updateStatusRow(index, row){
@@ -470,7 +476,7 @@ export default {
                   type: 'success',
                   message: status+'成功!'
                 });
-                 _this.query();
+                 _this.depart();
               } else {
                 alert(r.msg);
               }
@@ -484,16 +490,16 @@ export default {
         });
     },
     // 获取部门列表
-    depart(){
+    depart(e){
       var jsons = {};
 
       jsons.page= this.currentPage
 	    jsons.limit= this.pageSize	
-	    jsons.departname= ""
+	    jsons.departname= e
       departList({
         page:this.currentPage,
         limit:this.pageSize,
-        departname:""
+        departname:e
       }).then(res =>{
         var list = res.page.list;
         var size = res.page.totalCount;
@@ -502,7 +508,23 @@ export default {
       })
     },
     handleClick(tab, event) {
-        // console.log(tab, event);
+      if(tab.label == "加油站列表"){
+        this.oilType = "添加";
+        this.ruleForm.address=""
+        this.ruleForm.attn=""
+        this.ruleForm.cityStr=""
+        this.ruleForm.departname=""
+        this.ruleForm.e1=""
+        this.ruleForm.e2=""
+        this.ruleForm.e3=""
+        this.ruleForm.email=""
+        this.ruleForm.logo=""
+        this.ruleForm.mobile=""
+        this.ruleForm.notes=""
+        this.ruleForm.servicedate=""
+        this.imageUrl = ""
+        this.depart()
+      }
     },
     // 下一页
     handleCurrentChange(e){
@@ -546,5 +568,6 @@ export default {
   .l-display{
     display: flex;
     align-items: center;
+    margin: 8px 0;
   }
 </style>

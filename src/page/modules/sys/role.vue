@@ -1,373 +1,256 @@
 <!--  -->
 <template>
   <div>
-    <div class="charts">
-      <h3>vue2.0中使用echart</h3>
-      <div id="main" style=" width:100%; height:500px;"></div> 
-    </div>
+    <div class="animated slideInRight  delay-1s">
+        <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
+          <el-tab-pane label="用户列表" name="OliList" class=""> 
+            <div class="l-display">
+              <h5 style="color:#000;margin:0 10px;">检索用户</h5>
+              <el-input v-model="inputval" style="width:220px;height:40px;margin-right:10px;" clearable placeholder="请输入用户名称"></el-input>
+              <el-button type="primary" style="height:40px;line-height:0px;" @click="searchDepart">查询</el-button>
+            </div>
+            <div class="block">
+              <el-table
+                :data="tableData"
+                border
+                style="width: 100%">
+                <el-table-column
+                  className="animated slideInRight  delay-1s"
+                  fixed
+                  prop="roleId"
+                  label="角色ID"
+                  max-width="150">
+                </el-table-column>
+                <el-table-column
+                  className="animated slideInRight  delay-1s"
+                  prop="roleName"
+                  label="角色名称"
+                  max-width="150">
+                </el-table-column>
+                
+                <el-table-column
+                  className="animated slideInRight  delay-1s"
+                  prop="createTime"
+                  label="创建时间"
+                  max-width="150">
+                </el-table-column>
+                <el-table-column
+                  className="animated slideInRight  delay-1s"
+                  prop="remark"
+                  label="备注"
+                  max-width="150">
+                </el-table-column>
+                <el-table-column
+                  className="animated slideInRight  delay-1s"
+                  label="操作"
+                  max-width="150">
+                  <template slot-scope="scope">
+                    <el-button type="primary" @click="updata(scope.$index, scope.row)">修改</el-button>
+                    <el-button type="danger" @click="updateStatusRow(scope.$index, scope.row)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="0"
+                :page-sizes="[10, 30, 40, 50]"
+                
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="sizeLength">
+              </el-pagination>
+            </div>
+            
+          </el-tab-pane>
+
+          <el-tab-pane :label="oilType" name="addList">
+            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+              <!-- 部门名称 -->
+              <el-form-item label="用户名称" prop="roleName" class="animated slideInRight delay-1s">
+                <el-input v-model="ruleForm.roleName"></el-input>
+              </el-form-item>
+              <!-- 备注 -->
+               <el-form-item label="备注" prop="remark" class="animated slideInRight  delay-1s">
+                <el-input type="textarea" v-model="ruleForm.remark"></el-input>
+              </el-form-item>
+
+              <div class="l-quanxian animated slideInRight  delay-1s">
+                <div>
+                  <el-tree
+                    :data="data"
+                    show-checkbox
+                    default-expand-all
+                    node-key="id"
+                    ref="tree"
+                    highlight-current
+                    :props="defaultProps">
+                  </el-tree>
+                </div>
+                
+              </div>
+              
+
+              <div class="buttons">
+                <el-button @click="getCheckedKeys">通过 key 获取</el-button>
+              </div>
+
+
+
+              <!-- 提交 -->
+              <el-form-item>
+                <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
+                <el-button @click="reback">返回</el-button>
+              </el-form-item>
+            </el-form>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
   </div>
 </template>
 
 <script>
-import echarts from 'echarts';   //这里是你必须的，千万不能忘记！
-import $ from 'jquery'
+import {getUserList,getMenuTree,setUserInfo} from '../../../api/role/index';
+import * as stores from '../../../store/methods'
 export default {
+  components: {},
   data () {
+    var checkName = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('部门名称不能为空'));
+        }
+      };
     return {
-      // 初始化空对象  
-      chart: null,  
-      // 初始化图表配置  
-      opinion: ['A', 'B', 'C', 'D', 'E'],  
-      opinionData: [{  
-          value: 26,  
-          name: 'A'  
-      }, {  
-          value: 31,  
-          name: 'B'  
-      }, {  
-          value: 18,  
-          name: 'C'  
-      }, {  
-          value: 28,  
-          name: 'D' 
-      }, {  
-          value: 21,  
-          name: 'E'  
-      }]     
+      data: [],
+      defaultProps: {
+          children: 'children',
+          labels: 'label'
+      },
+      activeName: 'OliList',
+      oilType:"添加用户",
+      currentPage:"1",
+      pageSize:"10",
+      inputval:"",
+      tableData:[],
+      sizeLength:1,
+      currPage:"",
+
+      ruleForm: {
+        roleName:"",
+        remark:""
+      },
+      rules: {
+          // 用户名称
+          roleName:[
+            {validator: checkName, trigger: 'blur'} ],
+      },
+      menuIdList:[]
     };
   },
+ created(){
+   this.getUser()
+   this.getMenuTr()
+ },
+ methods:{
+    getCheckedKeys() {
+        // 这是选中的menuid
+        var menuid = this.$refs.tree.getCheckedKeys()
+        // 这是选中的半选中的menuid
+        var menuid1 = this.$refs.tree.getHalfCheckedKeys()
+        menuid = menuid.concat(menuid1)
+        this.menuIdList = menuid;
+      },
+    handleClick(tab, event) {
+      if(tab.label == "用户列表"){
+        this.oilType = "添加用户";
+        this.ruleForm ={}
+        this.getUser()
+      }
+    },
+    // 获取用户列表
+    getUser(e){
+      var jsons = {};
+      getUserList({
+        page:this.currentPage,
+        limit:this.pageSize
+      }).then(res =>{
+        var list = res.page.list;//列表
+        var size = res.page.totalCount; //总条数
+        var currPage = res.page.currPage;//当前页数
+        this.sizeLength = size;
+        this.tableData = list;
+      })
+    },
+    // 处理权限列表文件
+    getMenuTr(){
+      stores.getMenuTrees().then(res=>{
+        let obj = {}
+        this.data = res
+      })
+    },
+    // 修改部门信息
+    updata(index,row){
+      this.ruleForm = row;
+      // console.log(this.ruleForm)
+      this.activeName = "addList"
+      this.oilType = "修改用户"
+      this.imageUrl = "http://you.yunfeiyang.com"+row.logo
+    },
+    // 提交
+    submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+        this.getCheckedKeys();
+        this.ruleForm.menuIdList = this.menuIdList;
+        setUserInfo(this.ruleForm).then(res =>{
+          if(res.code==0){
+            this.activeName = "OliList"
+            this.oilType = "添加用户"
+            this.ruleForm ={}
+            this.data = []
+          }
+        })
+      },
+    reback() {
+      this.activeName = "OliList"
+      this.oilType = "添加用户"
+      this.ruleForm ={}
+    },
+    // 页面显示数据条数
+    handleSizeChange(e){
+      this.pageSize = e;
+      this.getUser();
+    },
+    // 下一页
+    handleCurrentChange(e){
+      this.currentPage = e;
+      this.getUser();
+    },
+    
+    // 查询用户
+    searchDepart(){
 
-  components: {},
-      mounted() {  
-                this.drawGraph('main')   
-        },
-  computed: {},
-  methods: {
-    // 绘图  
-            randomData() {
-                  return Math.round(Math.random()*100);
-                },
-                convertData(data) {
-                  var geoCoordMap = {
-
-                  '齐齐哈尔': [123.97, 47.33],
-                  '盐城': [120.13, 33.38],
-                  '青岛': [120.33, 36.07],
-                  '金昌': [102.188043, 38.520089],
-                  '泉州': [118.58, 24.93],
-                  '拉萨': [91.11, 29.97],
-                  '上海浦东': [121.48, 31.22],
-                  '攀枝花': [101.718637, 26.582347],
-                  '威海': [122.1, 37.5],
-                  '承德': [117.93, 40.97],
-                  '汕尾': [115.375279, 22.786211],
-                  '克拉玛依': [84.77, 45.59],
-                  '重庆市': [108.384366, 30.439702],
-
-                };
-                  var res = [];
-                  for (var i = 0; i < data.length; i++) {
-                      var geoCoord = geoCoordMap[data[i].name];
-                      if (geoCoord) {
-                          res.push({
-                              name: data[i].name,
-                              value: geoCoord.concat(data[i].value)
-                          });
-                      }
-                  }
-                  return res;
-                },
-            drawGraph(id) {
-                this.chart = echarts.init(document.getElementById(id))  
-                
-                var data = [
-                  {
-                      name: '齐齐哈尔'
-                  }, {
-                      name: '盐城'
-                  }, {
-                      name: '青岛'
-                  }, {
-                      name: '金昌'
-                  }, {
-                      name: '泉州'
-                  }, {
-                      name: '拉萨'
-                  }, {
-                      name: '上海浦东'
-                  }, {
-                      name: '攀枝花'
-                  }, {
-                      name: '威海'
-                  }, {
-                      name: '承德'
-                  }, {
-                      name: '汕尾'
-                  }, {
-                      name: '克拉玛依'
-                  }, {
-                      name: '重庆市'
-                  }
-
-                ];
-
-                
-
-
-
-                this.chart.setOption({
-                  series: [{
-                      type: 'map',
-                      map: 'china'
-                  }]
-                }); 
-                
-                this.chart.setOption({ 
-                  title: {
-                    text: '中国大区分布图',
-                    subtext: '中国的八大区分布',
-                    sublink: '#',
-
-                    itemGap: 30,
-
-                    left: 'center',
-                    textStyle: {
-
-                        color: '#1a1b4e',
-
-                        fontStyle: 'normal',
-
-                        fontWeight: 'bold',
-
-                        fontSize: 30
-
-                    },
-
-                    subtextStyle: {
-
-
-                        color: '#58d9df',
-
-                        fontStyle: 'normal',
-
-                        fontWeight: 'bold',
-
-                        fontSize: 16
-
-
-                    }
-                  },
-
-                  tooltip: {
-                      trigger: 'item'
-
-                  },
-
-                  visualMap: {
-                      min: 0,
-                      max: 100,
-                      left: 'left',
-                      top: 'bottom',
-                      text: ['高', '低'],
-                      calculable: true,
-                      inRange: {
-                          color: ['#ffffff', '#E0DAFF', '#ADBFFF', '#9CB4FF', '#6A9DFF', '#3889FF']
-                      }
-                  },
-                  toolbox: {
-                      show: true,
-                      orient: 'vertical',
-                      left: 'right',
-                      top: 'center',
-                      feature: {
-                          dataView: {
-                              readOnly: false
-                          },
-                          restore: {},
-                          saveAsImage: {}
-                      }
-                  },
-
-
-                  geo: {
-                      map: 'china',
-                      zoom: 1.2,
-                      label: {
-                          normal: {
-
-                              show: true,
-                              color: '#c1c4c8'
-                          },
-                          emphasis: {
-                              show: false,
-                              color: '#292929'
-                          }
-                      },
-                      roam: true,
-                      itemStyle: {
-                          normal: {
-                              areaColor: '#fbfbfb',
-                              borderColor: '#b9b4b7'
-
-                          },
-                          emphasis: {
-                              areaColor: '#05ff09'
-                          }
-                      }
-                  },
-                  series: [{
-                      name: '供需占比',
-                      type: 'effectScatter',
-                      coordinateSystem: 'geo',
-                      data: this.convertData(data),
-                      symbolSize: 10,
-                      showEffectOn: 'render',
-                      rippleEffect: {
-                          brushType: 'stroke'
-                      },
-                      hoverAnimation: true,
-                      label: {
-                          normal: {
-                              formatter: '{b}',
-                              position: 'right',
-                              show: false
-                          },
-                          emphasis: {
-                              show: true
-                          }
-                      },
-                      itemStyle: {
-                          normal: {
-                              color: '#c60fff',
-                              shadowBlur: 10,
-                              shadowColor: '#333'
-                          }
-                      }
-                  }, {
-                      type: 'map',
-                      mapType: 'china',
-                      geoIndex: 0,
-                      label: {
-                          normal: {
-                              show: true
-                          },
-                          emphasis: {
-                              show: true
-                          }
-                      },
-                      data: [{
-                          name: '北京',
-                          value: this.randomData()
-                      }, {
-                          name: '天津',
-                          value: this.randomData()
-                      }, {
-                          name: '上海',
-                          value: this.randomData()
-                      }, {
-                          name: '重庆',
-                          value: this.randomData()
-                      }, {
-                          name: '河北',
-                          value: this.randomData()
-                      }, {
-                          name: '河南',
-                          value: this.randomData()
-                      }, {
-                          name: '云南',
-                          value: this.randomData()
-                      }, {
-                          name: '辽宁',
-                          value: this.randomData()
-                      }, {
-                          name: '黑龙江',
-                          value: this.randomData()
-                      }, {
-                          name: '湖南',
-                          value: this.randomData()
-                      }, {
-                          name: '安徽',
-                          value: this.randomData()
-                      }, {
-                          name: '山东',
-                          value: this.randomData()
-                      }, {
-                          name: '新疆',
-                          value: this.randomData()
-                      }, {
-                          name: '江苏',
-                          value: this.randomData()
-                      }, {
-                          name: '浙江',
-                          value: this.randomData()
-                      }, {
-                          name: '江西',
-                          value: this.randomData()
-                      }, {
-                          name: '湖北',
-                          value: this.randomData()
-                      }, {
-                          name: '广西',
-                          value: this.randomData()
-                      }, {
-                          name: '甘肃',
-                          value: this.randomData()
-                      }, {
-                          name: '山西',
-                          value: this.randomData()
-                      }, {
-                          name: '内蒙古',
-                          value: this.randomData()
-                      }, {
-                          name: '陕西',
-                          value: this.randomData()
-                      }, {
-                          name: '吉林',
-                          value: this.randomData()
-                      }, {
-                          name: '福建',
-                          value: this.randomData()
-                      }, {
-                          name: '贵州',
-                          value: this.randomData()
-                      }, {
-                          name: '广东',
-                          value: this.randomData()
-                      }, {
-                          name: '青海',
-                          value: this.randomData()
-                      }, {
-                          name: '西藏',
-                          value: this.randomData()
-                      }, {
-                          name: '四川',
-                          value: this.randomData()
-                      }, {
-                          name: '宁夏',
-                          value: this.randomData()
-                      }, {
-                          name: '海南',
-                          value: this.randomData()
-                      }, {
-                          name: '台湾',
-                          value: this.randomData()
-                      }, {
-                          name: '香港',
-                          value: this.randomData()
-                      }, {
-                          name: '澳门',
-                          value: this.randomData()
-                      }, {
-                          name: '南海诸岛',
-                          value: this.randomData()
-                      }]
-                  }] 
-
-                })  
-            }
-  }
+    },
+ },
+ mounted(){},
+ computed:{},
 }
-
 </script>
 <style scoped>
+.l-display{
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+
+  }
+  .l-quanxian>div{
+    width: 30%;
+    margin: 0 auto;
+  }
 </style>
