@@ -1,41 +1,65 @@
 <!--  -->
 <template>
   <div>
-      <div class="my_display">
-        <h5 style="color:#555;margin-right:10px;">加油站名</h5>
-        <el-input v-model="input" style="width:220px;height:35px;margin-right:10px;" clearable placeholder="请输入内容"></el-input>
-        <el-button type="primary" style="height:40px;line-height:0px;">查询</el-button>
-      </div>
-
-      <div>
+      
+      <div class="animated slideInRight  delay-1s">
         <el-tabs v-model="activeName" type="border-card">
-          <el-tab-pane label="加油站列表" name="OliList"> 
+          <el-tab-pane label="人车匹配" name="OliList" class=""> 
+            <div class="l-display">
+              <h5 style="color:#000;margin:0 10px;">司机名称</h5>
+              <el-input v-model="inputval" style="width:220px;height:35px;margin-right:10px;" clearable placeholder="请输入司机名称"></el-input>
+              <el-button type="primary" style="height:40px;line-height:0px;" @click="searchDepart">查询</el-button>
+            </div>
             <div class="block">
               <el-table
                 :data="tableData"
-                border
                 style="width: 100%">
                 <el-table-column
-                  className="animated fadeInLeft  delay-.1s"
-                  fixed
+                  className="animated slideInRight  delay-1s"
                   prop="username"
-                  label="司机"
-                  max-width="180">
+                  label="司机名称"
+                  max-width="200">
                 </el-table-column>
                 <el-table-column
-                  className="animated fadeInLeft  delay-.1s"
+                  className="animated slideInRight  delay-1s"
                   prop="mobile"
                   label="手机号"
-                  max-width="180">
+                  max-width="200">
                 </el-table-column>
+               
                 <el-table-column
-                  className="animated fadeInLeft  delay-.1s"
+                  className="animated slideInRight  delay-1s"
+                  prop="zip"
                   label="操作"
-                  max-width="180">
-                  <template slot-scope="scope">
-                    <el-button size="mini" type="primary" @click="updateStatusRow(scope.$index, scope.row)">人车匹配</el-button>
-                  </template>
+                  max-width="200">
+                  <template>
+                     <el-button type="success">人车匹配</el-button>  
+                   </template>
+                    <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
+                    <el-dialog
+                      title="提示"
+                      :visible.sync="dialogVisible"
+                      :append-to-body="true"
+                      :center="true"
+                      width="50%"
+                      >
+                      <template>
+                        <div style="display: flex;justify-content: center;align-items: center;">
+                          <el-transfer v-model="value" :data="data"></el-transfer>
+
+                        </div>
+                      </template>
+                      
+
+
+                      <span slot="footer" class="dialog-footer">
+                        <el-button @click="dialogVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                      </span>
+                    </el-dialog>
                 </el-table-column>
+
+
               </el-table>
 
               <el-pagination
@@ -46,79 +70,51 @@
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="sizeLength">
               </el-pagination>
+
+
             </div>
             
           </el-tab-pane>
-          
-
-          <el-dialog
-            title="提示"
-            :visible.sync="dialogVisible"
-            width="40%"
-            :before-close="handleClose">
-            <template>
-              <el-transfer
-                filterable
-                v-model="value"
-                :props="{
-                  key: 'value',
-                  label: 'desc'
-                }"
-                :data="data">
-              </el-transfer>
-            </template>
-            <span slot="footer" class="dialog-footer">
-              <el-button @click="handleClose">取 消</el-button>
-              <el-button type="primary" @click="distribution">分 配</el-button>
-            </span>
-          </el-dialog>
-
-
-          <el-tab-pane label="添加" name="addList">
-            
-          </el-tab-pane>
         </el-tabs>
-        
+      
       </div>
   </div>
 </template>
 
 <script>
-// import {list, driverList} from '../../../api/yfybuserveh/index';
+import {getUserList} from '../../../api/yfybuserveh/index'
 export default {
   data () {
-    const generateData = _ => {
+      const generateData = _ => {
         const data = [];
-        driverList({
-          page:1,
-          limit:200
-        }).then(res=>{
-          console.log(res)
-          for(var item of res.page.list){
-              data.push({
-              value: item.id,
-              desc: `${ item.lpn }`,
-              disabled:false
-            });
-          }
-        })
-        
+        for (let i = 1; i <= 15; i++) {
+          data.push({
+            key: i,
+            label: `备选项 ${ i }`,
+            disabled: i % 4 === 0
+          });
+        }
         return data;
-    };
+      };
+      var baseURL = "http://you.yunfeiyang.com:8080/"
+      //登录token
+      var token = localStorage.getItem("tokens");
     return {
-      input:"",
-      activeName: 'OliList',
-      tableData: [],
-      pageSize:"10",
-      currentPage:"1",
-      sizeLength:0,
       data: generateData(),
-      value: [],
-      dialogVisible: false,
+        value: [1, 4],
+      oilType:"添加",
+      sizeLength:1,
+      tableData:[],
+      inputval:"",
+      activeName: 'OliList',
+      pageSize:10,
+      currentPage:1,
+      dialogVisible:false
+
     };
   },
   created(){
-    this.depart()
+    this.userLists()
   },
   components: {},
 
@@ -126,90 +122,79 @@ export default {
 
 
   methods: {
-    distribution(e){
-      var that = this;
-      console.log(this.value)
-      for(var item of this.data){
-        for(var id of that.value){
-          if(item.value == id){
-            console.log(item)
-          }
-        }
-        // console.log(item)
-      }
-    },
-    // 分配取消
     handleClose(done) {
-      var that = this;
-      this.dialogVisible= false
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          that.value=[];
-          done();
-        }).catch(_ => {});
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
       },
+    // 查询油站列表
+    searchDepart(){
+      this.userLists(this.inputval)
+    },
+   
     // 获取部门列表
-    depart(){
-      var jsons = {};
-      jsons.page= this.currentPage
-	    jsons.limit= this.pageSize	
-      list({
+    userLists(e){
+      getUserList({
         page:this.currentPage,
         limit:this.pageSize,
-        "_":1578029777792
+        key:e
       }).then(res =>{
+        console.log(res)
         var list = res.page.list;
         var size = res.page.totalCount;
         this.sizeLength = size;
         this.tableData = list;
       })
     },
-    updateStatusRow(index, row){
-      this.dialogVisible = true
-      return
-      var _this = this
-			var id = [row.id]
-			_this.addLine = row
-      var status = row.status == '0' ? "启用":"停用";
-      this.$confirm('确定要'+status+'此部门吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          _this.addLine.status=Math.abs(parseInt(row.status)-1);
-            updateRow(_this.addLine).then(r =>{
-              if (r.code == 0) {
-                _this.$message({
-                  type: 'success',
-                  message: status+'成功!'
-                });
-                 _this.query();
-              } else {
-                alert(r.msg);
-              }
-            })
-          
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消操作'
-          });          
-        });
-    },
-
-    // 页面显示数据条数
-    handleSizeChange(e){
-      this.pageSize = e;
-      this.depart();
-    },
     // 下一页
     handleCurrentChange(e){
       this.currentPage = e;
-      this.depart();
+      this.userLists();
     },
+    // 页面显示数据条数
+    handleSizeChange(e){
+      this.pageSize = e;
+      this.userLists();
+    },
+    
   }
 }
 
 </script>
 <style scoped>
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 300px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .l-display{
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+  }
+  .el-dialog__body{
+    display: flex;
+    justify-content: center;
+     align-items: center;
+  }
 </style>
