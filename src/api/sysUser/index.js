@@ -52,3 +52,11 @@ export function addRoleSave(data){
     data:data,
   })
 }
+// 添加用户
+export function updateRoleSave(data){
+  return Service({
+    url:"sys/user/update",
+    method:"post",
+    data:data,
+  })
+}

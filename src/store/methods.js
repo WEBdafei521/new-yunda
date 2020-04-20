@@ -271,7 +271,6 @@ export function getDepartLists(){
         }
       })
       for (var value of regionObj) {
-        console.log(value)
         value.value=value.orgCode
         value.label=value.departname
         for(var items of value.children){
@@ -287,4 +286,37 @@ export function getDepartLists(){
       
     })  
   });
+}
+
+export function getroleRules(row,roleList){
+  // console.log(row)
+   if(row.status == 1){
+    row.status="正常"
+    row.roleIdList=[]
+  }else{
+    row.status="禁用"
+    row.roleIdList=[]
+  }
+  var roleName = row.roleName.split(",");
+  for(var i=0;i<roleName.length;i++){
+    for(var item of roleList){
+      if(item.label == roleName[i] ){
+        if(row.roleIdList.indexOf(item.key) == -1){
+
+          row.roleIdList.push(item.key)
+        }
+      }
+    }
+  }
+  // console.log(row)
+  return row;
+}
+// 人车匹配 规则车辆信息
+export function setCarRuleInfo(carList){
+  var list = carList ;
+  list.forEach(element => {
+    element.key = element.id,
+    element.label = element.lpn
+  });
+  return list
 }

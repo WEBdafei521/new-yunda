@@ -24,7 +24,7 @@ export default {
     var _this = this
     window.onresize = function () { // 定义窗口大小变更通知事件
       _this.screenHeight = document.documentElement.clientHeight // 窗口高度
-      console.log(_this.screenHeight)
+      // console.log(_this.screenHeight)
     }
     
     var canvas = document.getElementById('canvas')

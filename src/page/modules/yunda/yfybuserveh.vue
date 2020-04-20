@@ -32,10 +32,9 @@
                   prop="zip"
                   label="操作"
                   max-width="200">
-                  <template>
-                     <el-button type="success">人车匹配</el-button>  
-                   </template>
-                    <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
+                    <template slot-scope="scope">
+                      <el-button type="success" @click="pipei(scope.$index, scope.row)">人车匹配</el-button>  
+                    </template>
                     <el-dialog
                       title="提示"
                       :visible.sync="dialogVisible"
@@ -46,7 +45,6 @@
                       <template>
                         <div style="display: flex;justify-content: center;align-items: center;">
                           <el-transfer v-model="value" :data="data"></el-transfer>
-
                         </div>
                       </template>
                       
@@ -54,7 +52,7 @@
 
                       <span slot="footer" class="dialog-footer">
                         <el-button @click="dialogVisible = false">取 消</el-button>
-                        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                        <el-button type="primary" @click="comfirm">确 定</el-button>
                       </span>
                     </el-dialog>
                 </el-table-column>
@@ -82,39 +80,39 @@
 </template>
 
 <script>
-import {getUserList} from '../../../api/yfybuserveh/index'
+import {getUserList,getCarList,getUserCarList,fenpei} from '../../../api/yfybuserveh/index'
+import * as stores from '../../../store/methods'
 export default {
   data () {
-      const generateData = _ => {
-        const data = [];
-        for (let i = 1; i <= 15; i++) {
-          data.push({
-            key: i,
-            label: `备选项 ${ i }`,
-            disabled: i % 4 === 0
-          });
-        }
-        return data;
-      };
-      var baseURL = "http://you.yunfeiyang.com:8080/"
-      //登录token
-      var token = localStorage.getItem("tokens");
+      
     return {
-      data: generateData(),
-        value: [1, 4],
       oilType:"添加",
+      data: [{
+        key:1,
+        label:"司机一"
+      },{
+        key:2,
+        label:"司机二"
+      },{
+        key:3,
+        label:"司机三"
+      }],
+      value: [],
+      
       sizeLength:1,
       tableData:[],
       inputval:"",
       activeName: 'OliList',
       pageSize:10,
       currentPage:1,
-      dialogVisible:false
+      dialogVisible:false,
+      userId:""
 
     };
   },
   created(){
     this.userLists()
+    this.carList()
   },
   components: {},
 
@@ -122,6 +120,44 @@ export default {
 
 
   methods: {
+    comfirm(){
+      var arr = []
+      for(var item of this.value){
+        var obj = {}
+        obj.vehId = item;
+        obj.userId = this.userId;
+        arr.push(obj)
+      }
+      fenpei(arr,this.userId).then(res => {
+        if(res.code == 0){
+          this.$message({
+                  type: 'success',
+                  message: '匹配成功！'
+                });
+          this.dialogVisible = false;
+          this.userId = ""
+          this.value=""
+        }
+      })
+    },
+    pipei(index,row){
+      this.dialogVisible = true;
+      var userId = row.userId;
+      this.userId = userId;
+      getUserCarList({userId:userId}).then(res => {
+        var arr = res.page.list;
+        var arrary = []
+        for(var item of arr){
+          arrary.push(item.vehId)
+        }
+        this.value = arrary
+      })
+    },
+    carList(){
+      getCarList({page:1,limit:200}).then(res => {
+        this.data = stores.setCarRuleInfo(res.page.list);
+      })
+    },
     handleClose(done) {
         this.$confirm('确认关闭？')
           .then(_ => {

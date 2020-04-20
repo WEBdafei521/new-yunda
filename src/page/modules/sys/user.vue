@@ -2,7 +2,7 @@
   <div>
       <div class="animated slideInRight delay-1s">
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-          <el-tab-pane label="加油站列表" name="OliList" class="animated slideInRight delay-1s"> 
+          <el-tab-pane label="员工列表" name="OliList" class="animated slideInRight delay-1s"> 
             <div class="my_display">
               <h5 style="color:#000;margin:0 10px;">用户名称</h5>
               <el-input v-model="searchName" style="width:220px;height:40px;margin:0 10px;" clearable placeholder="请输入内容"></el-input>
@@ -70,11 +70,10 @@
                 :total="sizeLength">
               </el-pagination>
             </div>
-            
           </el-tab-pane>
+
           <el-tab-pane :label="addOilType" name="addList">
-            
-              <div class="">
+              <div>
                 <el-col :span="24">
                   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
                     <el-form-item label="用户名" prop="username" class="animated slideInRight  delay-.1s">
@@ -91,7 +90,6 @@
                     </el-form-item>
 
                     <el-form-item label="石油公司/加油站" prop="orgCode" class="animated slideInRight  delay-.1s">
-                      <!-- <el-input v-model="ruleForm.roleIdList"></el-input> -->
                       <div class="block">
                         <el-cascader
                         style="width:100%;"
@@ -104,13 +102,25 @@
                     </el-form-item>
                     
                     <el-form-item label="角色" prop="roleIdList" class="animated slideInRight  delay-.1s">
-                      
                       <el-transfer v-model="ruleForm.roleIdList" :data="optionsR" :titles="['角色列表', '已选中角色']" :button-texts="['去除', '选中']" @change="selectRole"></el-transfer>
+                    </el-form-item>
+                    
+                    <el-form-item label="状态" prop="status" class="animated slideInRight  delay-.1s">
+                      <template>
+                        <el-select v-model="ruleForm.status" placeholder="请选择">
+                          <el-option
+                            v-for="item in optionsS"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                          </el-option>
+                        </el-select>
+                      </template>
                     </el-form-item>
 
                     <el-form-item>
                       <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-                      <el-button>取消</el-button>
+                      <el-button @click="cancelSubmit">取消</el-button>
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -123,7 +133,7 @@
 </template>
 
 <script>
-import {getMangeList,delectItem,getRoleList,getDepartList,addRoleSave} from '../../../api/sysUser/index'
+import {getMangeList,delectItem,getRoleList,getDepartList,addRoleSave,updateRoleSave} from '../../../api/sysUser/index'
 import * as stores from '../../../store/methods'
 import { Message } from 'element-ui'
 export default {
@@ -176,7 +186,7 @@ export default {
           email:"",
           mobile:"",
           roleIdList:[],
-          status:1,
+          status:"正常",
           orgCode:"",
       },
       rules: {
@@ -201,6 +211,13 @@ export default {
             { required: true, message: '请选择部门', trigger: 'blur' }
           ],
       },
+      optionsS:[{
+        value: '正常',
+        label: '正常'
+      },{
+        value: '禁用',
+        label: '禁用'
+      }],
       optionsP: [],//部门列表
       defaultParams: {
          label: 'name',
@@ -224,9 +241,23 @@ export default {
     })
   },
   methods: {
+    cancelSubmit(){
+      this.ruleForm={
+          username:"",
+          password:"",
+          email:"",
+          mobile:"",
+          roleIdList:[],
+          status:"正常",
+          orgCode:"",
+      }
+      this.activeName = "OliList"
+        this.addOilType="添加"
+    },
     selectDepart(e){
-      var index = e
+      var index = e.length-1
       this.ruleForm.orgCode = e[index];
+
     },
     getRoleLists(){
       getRoleList().then(res =>{
@@ -239,42 +270,81 @@ export default {
     },
     selectRole(e){ },
     submitForm(formName) {
+      // console.log(this.ruleForm)
         var _this = this;
-        _this.$refs[formName].validate((valid) => {
-          if (valid) {
-            addRoleSave(_this.ruleForm).then(res=>{
-              if(res.code == 0){
-                Message({
-                    message:res.msg,
-                    type: 'success',
-                    duration: 3 * 1000
-                  })
-                  _this.addOilType="添加"
-                  _this.activeName = "OliList"
-              }else{
-                Message({
-                    message: '错误信息:'+res.msg,
-                    type: 'error',
-                    duration: 3 * 1000
-                  })
-              }
-            })
-          } else {
-            Message({
-              message: '信息填写有误',
-              type: 'error',
-              duration: 3 * 1000
-            })
-            return false;
-          }
-        });
+        if(this.ruleForm.status == "正常"){
+          this.ruleForm.status=1
+        }
+        if(this.ruleForm.status == "禁用"){
+          this.ruleForm.status=0
+        }
+        // return
+        if(this.addOilType=="修改"){
+          _this.$refs[formName].validate((valid) => {
+            if (valid) {
+              updateRoleSave(_this.ruleForm).then(res=>{
+                if(res.code == 0){
+                  Message({
+                      message:res.msg,
+                      type: 'success',
+                      duration: 3 * 1000
+                    })
+                    _this.addOilType="添加"
+                    _this.activeName = "OliList"
+                }else{
+                  Message({
+                      message: '错误信息:'+res.msg,
+                      type: 'error',
+                      duration: 3 * 1000
+                    })
+                }
+              })
+            } else {
+              Message({
+                message: '信息填写有误',
+                type: 'error',
+                duration: 3 * 1000
+              })
+              return false;
+            }
+          });
+        }else{
+          _this.$refs[formName].validate((valid) => {
+            if (valid) {
+              addRoleSave(_this.ruleForm).then(res=>{
+                if(res.code == 0){
+                  Message({
+                      message:res.msg,
+                      type: 'success',
+                      duration: 3 * 1000
+                    })
+                    _this.addOilType="添加"
+                    _this.activeName = "OliList"
+                }else{
+                  Message({
+                      message: '错误信息:'+res.msg,
+                      type: 'error',
+                      duration: 3 * 1000
+                    })
+                }
+              })
+            } else {
+              Message({
+                message: '信息填写有误',
+                type: 'error',
+                duration: 3 * 1000
+              })
+              return false;
+            }
+          });
+        }
+       
     },
     updateInfo(index,row){
-       console.log(row)
         this.activeName = "addList"
-        // this.addOilType="修改"
-        this.ruleForm = row;
-        console.log(this.ruleForm)
+        this.addOilType="修改"
+        var row = stores.getroleRules(row,this.optionsR)
+         this.ruleForm = row;
     },
     // 查询按钮
     searchBtn(){
