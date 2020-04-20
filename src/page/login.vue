@@ -175,8 +175,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .l-login-box{
+  position: fixed;
+  z-index: 999;
     width: 100vw;
     height: 100vh;
+    top:0;
     background: transparent;
     display: flex;
     justify-content: center;

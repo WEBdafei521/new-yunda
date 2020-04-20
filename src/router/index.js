@@ -42,7 +42,7 @@ const router = new Router({
           component:  resolve => {require(['../page/modules/yunda/depart'], resolve)},
         },
         {
-          // 角色管理
+          // 
           path: '/modules/sys/role',
           name: 'role',
           component: resolve => {require(['../page/modules/sys/role'], resolve)},

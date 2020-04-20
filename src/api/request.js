@@ -50,3 +50,18 @@ export function downLoadImg(data) {
     method:"post",
   })
 }
+// 获取油站编号
+export function getStationNumber(data) {
+  return Service({
+    url: 'yunda/yfysdepart/get/departNo?type=2',
+    method:"get",
+  })
+}
+// 添加油站
+export function addStation(data) {
+  return Service({
+    url: 'yunda/yfysdepart/save/station',
+    method:"post",
+    data:data
+  })
+}

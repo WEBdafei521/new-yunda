@@ -1,7 +1,6 @@
 <!--  -->
 <template>
   <div>
-      
       <div class="animated slideInRight  delay-1s">
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
           <el-tab-pane label="加油站列表" name="OliList" class=""> 
@@ -60,8 +59,8 @@
                   max-width="150">
                   <template slot-scope="scope">
                     <el-button type="primary" @click="updata(scope.$index, scope.row)">修改</el-button>
-                    <el-button v-if="scope.row.status == '0' " size="mini" type="primary" @click="updateStatusRow(scope.$index, scope.row)">启用</el-button>
-                    <el-button v-if="scope.row.status == '1' " size="mini" type="danger" @click="updateStatusRow(scope.$index, scope.row)">停用</el-button> 
+                    <el-button v-if="scope.row.status == '0' " type="primary" @click="updateStatusRow(scope.$index, scope.row)">启用</el-button>
+                    <el-button v-if="scope.row.status == '1' " type="danger" @click="updateStatusRow(scope.$index, scope.row)">停用</el-button> 
                   </template>
                 </el-table-column>
               </el-table>

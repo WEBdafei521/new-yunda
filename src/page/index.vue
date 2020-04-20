@@ -2,7 +2,7 @@
 <template>
   <div>
     <el-container>
-
+      
       <!-- aside -->
        <div> 
         <el-menu :default-active="default_active_index" class="el-menu-vertical-demo" :collapse-transition="true" @open="handleOpen" @select="handleSelect" :collapse="isCollapse" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" active-background-color="#0A8061">
@@ -71,7 +71,7 @@
           
         </div>
         <!-- main - main -->
-        <div class="l-main-index" :style="{width:'100%',height:screenHeight-46+'px',}">
+        <div class="l-main-index" :style="{width:'100%',height:screenHeight-46+'px',}" style="boxSizing:border-box;">
           <transition>
             <router-view/>
           </transition>
@@ -105,6 +105,10 @@ export default {
  created(){
    this.userInfo = JSON.parse(this.$store.getters.get_yd_user_info);
    this.navList()
+   var pathKey = sessionStorage.getItem("pathKey")
+   if(pathKey){
+     this.default_active_index=pathKey
+   }
  },
  methods:{
     // 确定修改密码
@@ -152,11 +156,14 @@ export default {
         // console.log(key, keyPath);
       },
       handleSelect(key, keyPath) {
+        sessionStorage.setItem("pathKey",key)
         var menuList = this.menuList;
         // 解析url
         var urls = stores.getMenUrl(menuList,key)
         this.default_active_index = key;
+
         this.$router.push("/"+urls)
+        
       },
    // 请求菜单数据
     navList(){
@@ -182,7 +189,7 @@ export default {
   .l-main-index{
     width: 100%;
     /* height:100%; */
-    padding: 8px 8px 8px 8px;
+    padding: 10px;
     box-sizing: border-box;
     background: #7d8185;
     overflow: auto;

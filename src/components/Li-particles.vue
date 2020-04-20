@@ -17,13 +17,16 @@ export default {
     'screenHeight': function (val) { // 监听屏幕高度变化
       var oIframe = document.getElementById('login')
       oIframe.style.height = Number(val) + 'px' // '120'是页面布局调整，可去除
+      
     }
   },
   mounted () {
     var _this = this
     window.onresize = function () { // 定义窗口大小变更通知事件
       _this.screenHeight = document.documentElement.clientHeight // 窗口高度
+      console.log(_this.screenHeight)
     }
+    
     var canvas = document.getElementById('canvas')
     var ctx = canvas.getContext('2d')
     var w = canvas.width = window.innerWidth

@@ -1,7 +1,11 @@
 import router from '../router'
 import store from "./index"
-import { updatePwd,mainInfo} from '../api/request'
+import province from "../page/js/province.json"
+import city from "../page/js/city"
+import list from "../page/js/list"
+import { updatePwd,mainInfo,getStationNumber} from '../api/request'
 import {getMenuTree} from '../api/role/index'
+import {getDepartList} from '../api/sysUser/index'
 export function LOGIN_OUT(Vue, options) {
     console.log("调用了LOGIN_OUT")
         sessionStorage.removeItem('tokens');
@@ -28,6 +32,7 @@ export function setMenuList(menuList){
 
     return list
 }
+// 获取菜单列表
 export function getMenUrl(menuList,key){
     var list = menuList;
     var url = ""
@@ -41,6 +46,7 @@ export function getMenUrl(menuList,key){
     var urlArr = url.split(".")[0]
     return urlArr
 }
+// 更改面膜
 export function comfirms(oldPwd,newPwd){
     var   _this = this;
     var isCheck = _this.checkedInpVal(oldPwd,newPwd)
@@ -92,16 +98,17 @@ export function checkedInpVal(oldPwd,newPwd){
       return true;
     }
   }
-  // 获取用户个人信息
+  // 获取用户个人信息 yd_user_info
 export function getLoginUser(){
     var user = JSON.parse(localStorage.getItem("yd_user_info"))
     return user;
 }
+// 获取部门信息 yd_user_dept
 export function getLoginDept(){
   var dept = JSON.parse(localStorage.getItem("yd_user_dept"))
   return dept;
 }
-// 获取油站列表
+// 获取油站列表 用于显示首页
 export function getStationPosition(){
   return new Promise((resolve, reject) =>{  
 
@@ -181,6 +188,102 @@ export function getMenuTrees(){
         }
       }
       resolve(arr);
+      
+    })  
+  });
+}
+// 获取全国省份
+export function getProvince(e){
+  var provinceList = province
+  var arr = []
+  for(var item in provinceList){
+    let obj = {}
+    obj.value = item;
+    obj.label = provinceList[item];
+    arr.push(obj)
+  }
+  return arr
+}
+// 通过省的编码 获取省内所有的城市
+export function getCity(index){
+  var cityList = city
+  var arr = []
+  var citys = []
+  for(var item in cityList){
+    if(item == index){
+      arr = cityList[item]
+      for(var items in arr){
+        let obj = {}
+        obj.value = items;
+        obj.label = arr[items];
+        citys.push(obj)
+      }
+    } 
+  }
+  return citys
+}
+// 通过市的编码 获取市内所有的县区
+export function getArea(index){
+  var areaList = list
+  var arr = []
+  var areas = []
+  var index_slice = index.substr(0,4)
+  for(var item in areaList){
+    var item_slice = item.substr(0,4)
+    
+    if(item_slice == index_slice){
+        let obj = {}
+        obj.value = item;
+        obj.label = areaList[item];
+        areas.push(obj)
+    } 
+  }
+  return areas
+}
+// 获取油站编号
+export function getStationNum(){
+  return new Promise((resolve, reject) =>{
+    getStationNumber().then(res=>{
+      resolve(res.departNo)
+    })
+  })
+}
+
+// 获取管理员页面部门列表，并处理成符合element中Tree支持的格式
+export function getDepartLists(){
+  return new Promise((resolve, reject) =>{  
+    getDepartList().then(res =>{
+      var list = res.list
+      let regionObj = []
+      list.forEach((item, index) => {
+        item.children=[]
+        if(item.parentdepartid == 0){
+          regionObj.push(item)
+        }else{
+          if(regionObj[0].id == item.parentdepartid){
+            regionObj[0].children.push(item)
+          }
+          for(var item_child of list){
+            if(item.id == item_child.parentdepartid){
+              item.children.push(item_child)
+            }
+          }
+        }
+      })
+      for (var value of regionObj) {
+        console.log(value)
+        value.value=value.orgCode
+        value.label=value.departname
+        for(var items of value.children){
+          items.value=items.orgCode
+          items.label=items.departname
+          for(var item of items.children){
+            item.value=item.orgCode
+            item.label=item.departname
+          }
+        }
+      }
+      resolve(regionObj);
       
     })  
   });

@@ -32,6 +32,7 @@ Service.interceptors.request.use(config => {
 })
 // 添加响应拦截器
 Service.interceptors.response.use(response => {
+  // console.log(response)
   if(response.data.code===401){
     sessionStorage.removeItem('tokens')
     localStorage.removeItem('tokens')
