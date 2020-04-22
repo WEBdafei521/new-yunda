@@ -256,7 +256,7 @@ export default {
       this.oilType = "修改"
     },
     // 删除
-    delStatusRowStatusRow(index, row){
+    delStatusRow(index, row){
       var _this = this
 			var id = [row.id]
       this.$confirm('确定要删除此司机吗？', '提示', {

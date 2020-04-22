@@ -99,7 +99,7 @@ const router = new Router({
           // 油卡限制管理
           path: '/modules/controlCard/yfyscontrolcard',
           name: 'controlCard/yfyscontrolcard',
-          component: resolve => {require(['../page/main'], resolve)},
+          component: resolve => {require(['../page/modules/controlCard/yfyscontrolcard'], resolve)},
           meta:{
             isLogin:true
           },
@@ -118,6 +118,34 @@ const router = new Router({
           path: '/modules/card/yfyscard',
           name: 'card/yfyscard',
           component: resolve => {require(['../page/main'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+      // 油品管理
+        // 进油管理
+        {
+          path: '/modules/oilRecord/yfyboilrecord',
+          name: 'yfyboilrecord',
+          component: resolve => {require(['../page/modules/oilRecord/yfyboilrecord'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+        // 油品管理
+        {
+          path: '/modules/goods/yfysgoods',
+          name: 'yfysgoods',
+          component: resolve => {require(['../page/modules/goods/yfysgoods'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+        // 调价记录
+        {
+          path: '/modules/goods/yfysgoodsinfo',
+          name: 'yfysgoodsinfo',
+          component: resolve => {require(['../page/modules/goods/yfysgoodsinfo'], resolve)},
           meta:{
             isLogin:true
           },

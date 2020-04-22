@@ -6,6 +6,7 @@ import list from "../page/js/list"
 import { updatePwd,mainInfo,getStationNumber} from '../api/request'
 import {getMenuTree} from '../api/role/index'
 import {getDepartList} from '../api/sysUser/index'
+import {getOilList} from '../api/yfyVehicle/index'
 export function LOGIN_OUT(Vue, options) {
     console.log("调用了LOGIN_OUT")
         sessionStorage.removeItem('tokens');
@@ -319,4 +320,45 @@ export function setCarRuleInfo(carList){
     element.label = element.lpn
   });
   return list
+}
+// 车辆管理 油品列表信息规格化
+export function setCarRule(list){
+  return new Promise((resolve, reject) =>{  
+    getOilList({page:'1',limit:"200",languageId:"2052"}).then(res=>{
+      var list = res.page.list
+      let regionObj = []
+      list.forEach((item, index) => {
+        item.children=[]
+        if(!item.parentCode){
+          regionObj.push(item)
+        }
+      })
+      regionObj.forEach((item, index) => {
+        list.forEach((item1, index1) => {
+          if(item.oilCode==item1.parentCode && item1.parentCode){
+            item.children.push(item1)
+          }
+        })
+      })
+      for (var value of regionObj) {
+        value.value=value.oilCode
+        value.label=value.oilName
+        for(var items of value.children){
+          items.value=items.oilCode
+          items.label=items.oilName
+        }
+      }
+      resolve(regionObj);
+    })
+  });
+}
+
+// 人民币校检
+export function testMoney(value){
+  var reg = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;
+  if (reg.test(value)) {
+    return value
+  }else{
+    return false;
+  };
 }
