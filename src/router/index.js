@@ -150,6 +150,52 @@ const router = new Router({
             isLogin:true
           },
         },
+        // 标签管理
+        {
+          path: '/modules/goods/yfystagtype0',
+          name: 'yfystag',
+          component: resolve => {require(['../page/modules/goods/yfystagtype0'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+        // 标签分配
+        {
+          path: '/modules/goods/yfystagtype1',
+          name: 'yfystag',
+          component: resolve => {require(['../page/modules/goods/yfystagtype1'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+      // 设备管理 
+        // 油罐管理
+        {
+          path: '/modules/equipment/yfystank',
+          name: 'yfystag',
+          component: resolve => {require(['../page/modules/equipment/yfystank'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+        // 智能控制器
+        {
+          path: '/modules/equipment/yfyscontroller',
+          name: 'yfystag',
+          component: resolve => {require(['../page/modules/equipment/yfyscontroller'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+        // 油枪管理
+        {
+          path: '/modules/equipment/yfysgun',
+          name: 'yfystag',
+          component: resolve => {require(['../page/modules/equipment/yfysgun'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
       ]
     },
     

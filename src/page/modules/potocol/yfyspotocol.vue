@@ -6,7 +6,7 @@
         <el-input v-model="input" style="width:220px;height:35px;margin-right:10px;" clearable placeholder="请输入内容"></el-input>
         <el-button type="primary" style="height:40px;line-height:0px;">查询</el-button>
       </div>
-
+               
       <div>
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
           <el-tab-pane label="加油站列表" name="OliList"> 

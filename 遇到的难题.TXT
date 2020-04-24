@@ -1,0 +1,118 @@
+一、css兼容性问题
+1、适配问题，设计图上字体是10px，后台设计师乙方设计师找来了，说chrome浏览器字体怎么这么大，为什么不按照他们设计的10px做呢？ 后来经百度、知乎查找资料发现，chrome默认最小字体大小是12px。解决思路：通过tranfroms：scale；缩小字体可以解决
+2、设计师，前端，后端产品之间的协调我感觉是最困难的
+3、IE6双边距bug：块属性标签float后，又有横行的margin情况下，在IE6显示margin比设置的大。hack：display:inline;将其转化为行内属性。
+4、不同浏览器的标签默认的margin和padding不一样。*{margin:0;padding:0;}
+5、超链接访问过后hover样式就不出现了，被点击访问过的超链接样式不再具有hover和active了。解决方法是改变CSS属性的排列顺序:L-V-H-A ( love hate ): a:link {} a:visited {} a:hover {} a:active {}
+
+
+
+
+ var value = 0.5;
+ var data = [value, value];
+ option = {
+     backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+        offset: 0,
+        color: '#ffffff'
+    }, {
+        offset: 1,
+        color: '#ffffff'
+    }]),
+     title: {
+         text: (value * 100).toFixed(0) + '{a|%}',
+         textStyle: {
+             fontSize: 150,
+             fontFamily: 'Microsoft Yahei',
+             fontWeight: 'normal',
+             color: '#3CB3D5',
+             rich: {
+                 a: {
+                     fontSize: 36,
+                 }
+             }
+         },
+         x: 'center',
+         y: '25%'
+     },
+     graphic: [{
+         type: 'group',
+         left: 'center',
+         top: '7%',
+         children: [{
+             type: 'text',
+             z: 100,
+             left: '10',
+             top: 'middle',
+             style: {
+                 fill: '#00A7D3',
+                 text: '存储油量',
+                 font: '50px Microsoft YaHei'
+             }
+         }]
+     }],
+     series: [{
+         type: 'liquidFill',
+         radius: '70%',
+         center: ['50%', '50%'],
+         //  shape: 'roundRect',
+         data: data,
+         amplitude: "30px",
+         emphasis: {
+            itemStyle: {
+                opacity: 0.6//悬浮样式
+            }
+        },
+         backgroundStyle: {
+             color:'rgba(211,248,255, 1)',
+         },
+         outline: {
+             borderDistance: 0,
+             itemStyle: {
+                 borderWidth: 0,
+                 borderColor: {
+                     type: 'linear',
+                     x: 0,
+                     y: 0,
+                     x2: 0,
+                     y2: 1,
+                     colorStops: [{
+                         offset: 0,
+                         color: 'rgba(174,229,53, 1)'
+                     }, {
+                         offset: 0.5,
+                         color: 'rgba(160,217,224, 1)'
+                     }, {
+                         offset: 1,
+                         color: 'rgba(42,172,225, 1)'
+                     }],
+                     globalCoord: false
+                 },
+                 shadowBlur: 500,
+                 shadowColor: '#ffffff',
+             }
+         },
+         color: {
+             type: 'linear',
+             x: 0,
+             y: 0,
+             x2: 0,
+             y2: 1,
+             colorStops: [{
+                 offset: 1,
+                 color: 'rgba(0,167,211, 1)'
+             }, {
+                 offset: 0.5,
+                 color: 'rgba(2,218,234, 1)'
+             }, {
+                 offset: 0,
+                 color: 'rgba(0,252,245, 1)'
+             }],
+             globalCoord: false
+         },
+         label: {
+             normal: {
+                 formatter: '',
+             }
+         }
+     }, ]
+ };

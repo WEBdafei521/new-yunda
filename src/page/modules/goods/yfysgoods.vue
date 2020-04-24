@@ -282,10 +282,17 @@ export default {
     },
     // 提交
     submitForm(formName) {
-      console.log(this.$refs[formName].validate)
+      var ischecked=true
       this.$refs[formName].validate((valid) => {
-          if (valid) {
-              saveOilType(this.ruleForm).then(res =>{
+        console.log(valid)
+        if (valid) {
+              
+          } else {
+            ischecked = false
+          }
+        });
+        if(ischecked){
+          saveOilType(this.ruleForm).then(res =>{
                   if(res.code==0){
                     this.activeName="OliList"
                     this.$message({
@@ -305,15 +312,9 @@ export default {
                       type: 'info',
                       message: res.msg
                     });
-                  }
+                  } 
               })
-          } else {
-            return false;
-          }
-        });
-        // if()
-        console.log("----")
-        
+        }
       },
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -421,11 +422,12 @@ export default {
     handleClick(tab, event) {
       if(tab.label == "加油列表"){
           this.ruleForm={
-                    lpn:"",
-                    username:"",
-                    oilCode:"",
-                    confinQty:"",
-                    frequency:""
+                    abbreviate:"",
+                      goodsCode:"",
+                      goodsName:"",
+                      price:"",
+                      goodsDetails:"",
+                      id:"",
                 }
         this.getOilLists()
       }

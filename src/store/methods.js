@@ -7,6 +7,7 @@ import { updatePwd,mainInfo,getStationNumber} from '../api/request'
 import {getMenuTree} from '../api/role/index'
 import {getDepartList} from '../api/sysUser/index'
 import {getOilList} from '../api/yfyVehicle/index'
+import {Service} from '../api/Server'
 export function LOGIN_OUT(Vue, options) {
     console.log("调用了LOGIN_OUT")
         sessionStorage.removeItem('tokens');
@@ -44,8 +45,13 @@ export function getMenUrl(menuList,key){
           }
         }
     }
-    var urlArr = url.split(".")[0]
-    return urlArr
+    var urlArr = url.split(".");
+    var labelUrl="";
+    if(urlArr[1].indexOf("?") != -1){
+      // yfystag?type = 1
+      labelUrl = urlArr[1].split("?")[1].split("=").join("");
+    }
+    return urlArr[0]+labelUrl
 }
 // 更改面膜
 export function comfirms(oldPwd,newPwd){
@@ -361,4 +367,20 @@ export function testMoney(value){
   }else{
     return false;
   };
+}
+// 全局删除方法
+export function deleteListItem(data,url){
+  return Service({
+    url: url,
+    method:"post",
+    data: data,
+  })
+}
+// 全局获取列表方法
+export function getList(data,url){
+  return Service({
+    url: url,
+    method:"post",
+    params: data,
+  })
 }
