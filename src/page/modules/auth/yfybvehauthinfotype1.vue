@@ -3,13 +3,12 @@
   <div>
       <div class="animated slideInRight  delay-1s">
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-          <el-tab-pane label="油品列表" name="OliList" class=""> 
+          <el-tab-pane label="车辆计划授权管理" name="OliList" class=""> 
             <div class="l-display">
               <h5 style="color:#000;margin:0 10px;">石油公司</h5>
               <el-select v-model="orgCodeValue" clearable @change="selectCompany" placeholder="请选择">
                 <el-option
                   v-for="item in companyOptions"
-                  
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
@@ -25,10 +24,23 @@
                   :value="item.value">
                 </el-option>
               </el-select>
-              <h5 style="color:#000;margin:0 10px;">油品名</h5>
-              <el-input v-model="goodsName" style="width:200px;"></el-input>
-              <h5 style="color:#000;margin:0 10px;">油品代码</h5>
-              <el-input v-model="goodsCode" style="width:200px;"></el-input>
+              <h5 style="color:#000;margin:0 10px;">司机名称</h5>
+              <el-input v-model="sname" style="width:200px;"></el-input>
+              <h5 style="color:#000;margin:0 10px;">时间</h5>
+              <el-date-picker
+                @change="selectTime"
+                v-model="value2"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="pickerOptions"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd">
+              </el-date-picker>
+              
               <el-button type="primary" style="height:40px;line-height:0px;margin:0 16px;" @click="searchDepart">查询</el-button>
             </div>
             <div class="block">
@@ -38,75 +50,81 @@
                 <el-table-column
                   className="animated slideInRight  delay-1s"
                   prop="deptName"
-                  label="石油公司/加油站"
+                  label="油站"
                   max-width="60">
                 </el-table-column>
+
+
                 <el-table-column
                   className="animated slideInRight  delay-1s"
-                  prop="goodsName"
-                  label="油品名"
+                  prop="sname"
+                  label="司机"
                   max-width="120">
                 </el-table-column>
                 <el-table-column
                   className="animated slideInRight  delay-1s"
-                  prop="goodsCode"
-                  label="油品代码"
+                  prop="username"
+                  label="用户名"
+                  max-width="120">
+                </el-table-column>
+                
+                <el-table-column
+                  className="animated slideInRight  delay-1s"
+                  prop="preAuthQuantity"
+                  label="修改前授权量"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
                   className="animated slideInRight  delay-1s"
-                  prop="price"
-                  label="单价(元/L)"
+                  prop="preAuthTimeType"
+                  label="修改前授权周期"
                   max-width="150">
-                </el-table-column>
-
-                <el-table-column
-                  className="animated slideInRight  delay-1s"
-                  label="操作"
-                  width="200">
                   <template slot-scope="scope">
-                    <el-button type="primary" @click="updataPrice(scope.$index, scope.row)">调价</el-button>
-                    <el-button type="danger" @click="delStatusRow(scope.$index, scope.row)">删除</el-button> 
+                    <el-tag v-if="scope.row.preAuthTimeType == 1 " size="big" type="success">月</el-tag>
+                    <el-tag v-if="scope.row.preAuthTimeType == 2 " size="mini" type="success">季度</el-tag>
+                    <el-tag v-if="scope.row.preAuthTimeType == 3 " size="mini" type="success">年</el-tag>
+                    <el-tag v-if="scope.row.preAuthTimeType == 9 " size="mini" type="success">不限</el-tag>
                   </template>
                 </el-table-column>
-              </el-table>
-              <el-dialog
-                title="油品调价"
-                append-to-body
-                :visible.sync="dialogVisible"
-                width="40%">
-                <div class="l-display-cum">
-                  <div class="l-display-item">
-                    <h5 style="color:#000;margin:0 10px;">油品</h5>
-                    <el-input disabled v-model="oilTypeName" style="width:200px;"></el-input>
-                  </div>
-                  <div class="l-display-item">
-                    <h5 style="color:#000;margin:0 10px;">当前油价<span>(元/升)</span></h5>
-                    <el-input disabled v-model="oldPrice" style="width:200px;"></el-input>
-                  </div>
-                  <div class="l-display-item">
-                    <h5 style="color:#000;margin:0 10px;">新油价 <span>(元/升)</span></h5>
-                    <el-input v-model="newPrice" style="width:200px;"></el-input>
-                  </div>
-                  <div class="l-display-item">
-                    <h5 style="color:#000;margin:0 10px;">选择油枪 </h5>
-                    <el-select v-model="gunValue" multiple placeholder="请选择">
-                      <el-option
-                        v-for="item in gunOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </div>
-                </div>
-                
+                <el-table-column
+                  className="animated slideInRight  delay-1s"
+                  prop="aftAuthQuantity"
+                  label="修改前剩余授权量"
+                  max-width="150">
+                </el-table-column>
+                <el-table-column
+                  className="animated slideInRight  delay-1s"
+                  prop="aftAuthQuantity"
+                  label="修改后授权量"
+                  max-width="150">
+                </el-table-column>
+                <el-table-column
+                  className="animated slideInRight  delay-1s"
+                  prop="aftAuthTimeType"
+                  label="修改后授权周期"
+                  max-width="150">
+                  <template slot-scope="scope">
+                    <el-tag v-if="scope.row.aftAuthTimeType == 1 " size="big" type="success">月</el-tag>
+                    <el-tag v-if="scope.row.aftAuthTimeType == 2 " size="mini" type="success">季度</el-tag>
+                    <el-tag v-if="scope.row.aftAuthTimeType == 3 " size="mini" type="success">年</el-tag>
+                    <el-tag v-if="scope.row.aftAuthTimeType == 9 " size="mini" type="success">不限</el-tag>
+                  </template>
+                </el-table-column>
 
-                <span slot="footer" class="dialog-footer">
-                  <el-button @click="dialogVisible = false">取 消</el-button>
-                  <el-button type="primary" @click="tiaojia">确 定</el-button>
-                </span>
-              </el-dialog>
+                <el-table-column
+                  className="animated slideInRight  delay-1s"
+                  prop="updateUser"
+                  label="修改人"
+                  max-width="150">
+                </el-table-column>
+                <el-table-column
+                  className="animated slideInRight  delay-1s"
+                  prop="updateTime"
+                  label="修改时间"
+                  max-width="150">
+                </el-table-column>
+              </el-table>
+              
               <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
@@ -119,55 +137,13 @@
             
           </el-tab-pane>
 
-          <el-tab-pane label="添加油品" name="addList">
-            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-              <!-- 油品分类 -->
-              <el-form-item label="油品分类" prop="abbreviate" class="animated slideInRight  delay-.1s">
-                <div class="block">
-                        <el-cascader
-                        style="width:100%;"
-                          size="medium"
-                          @change="selectOilType"
-                          :options="optionsP"
-                          :props="{ checkStrictly: true,defaultParams }"
-                          clearable></el-cascader>
-                      </div>
-              </el-form-item>
-              <!-- 油品代码 -->
-              <el-form-item  label="油品代码" prop="goodsCode" class="animated slideInRight  delay-.1s">
-                <el-input disabled v-model="ruleForm.goodsCode"></el-input>
-              </el-form-item>
-              <!-- 油品名(L) -->
-              <el-form-item label="油品名" prop="goodsName" class="animated slideInRight  delay-.1s">
-                <el-input v-model="ruleForm.goodsName"></el-input>
-              </el-form-item>
-              <!-- 简称 -->
-              <el-form-item label="简称" prop="abbreviate" class="animated slideInRight  delay-.1s">
-                <el-input v-model="ruleForm.abbreviate"></el-input>
-              </el-form-item>
-              <!-- 单价 -->
-              <el-form-item label="单价" prop="price" class="animated slideInRight  delay-.1s">
-                <el-input v-model="ruleForm.price"></el-input>
-              </el-form-item>
-              <!-- 油品详情 -->
-              <el-form-item label="油品详情" prop="goodsDetails" class="animated slideInRight  delay-.1s">
-                <el-input type="textarea" v-model="ruleForm.goodsDetails"></el-input>
-              </el-form-item>
-
-              <!-- 提交 -->
-              <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-                <el-button @click="resetForm('ruleForm')">重置</el-button>
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
         </el-tabs>
       </div>
   </div>
 </template>
 
 <script>
-import {getOilList,delOilType,saveOilType,getGun,updataPrice} from '../../../api/goods/index';
+import {getOilList,saveOilType,getGun} from '../../../api/goods/index';
 
 import * as stores from '../../../store/methods'
 export default {
@@ -180,38 +156,49 @@ export default {
       };
     return {
       activeName: 'OliList',
-      dialogVisible:false,
       sizeLength:0,
       currentPage:"1",
       pageSize:"10",
       tableData: [],
-      ruleForm: {
-        abbreviate:"",
-        goodsCode:"",
-        goodsName:"",
-        price:"",
-        goodsDetails:"",
-        id:"",
-      },
-      rules: {
-          abbreviate: [
-            { required: true, message: '请输入选择油品', trigger: 'blur' }
-          ],
-          price: [  {validator: checkPrice, trigger: 'blur'} ],
-      },
+
+      pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
+      value2:"",
+      startTime:"",
+      endTime:"",
+
       companyOptions:[],
       orgCodeValue:"",
       orgCodeValue1:"",
       stationOptions:[],
       goodsCode:"",
-      goodsName:"",
-      gunOptions: [],
-      // 选择调价油品
-      gunValue: [],
-      oilTypeName:"",
-      oldPrice:"",
-      newPrice:"",
-      id:"",
+      sname:"",
+      
       // 选择油品类型
       optionsP:[],
       defaultParams: {
@@ -219,6 +206,8 @@ export default {
          value: 'id',
          children: 'children'
       },
+
+      
     };
   },
   created(){
@@ -239,6 +228,10 @@ export default {
 
 
   methods: {
+    selectTime(e){
+      this.startTime = e[0]
+      this.endTime = e[1]
+    },
     getOilTypeList(){
       stores.setCarRule().then(res=>{
         this.optionsP = res
@@ -257,162 +250,24 @@ export default {
       }
       this.stationOptions = station
     },
-    // 选择油品
-    selectOilType(e){
-      var row ={}
-      var index = e.length-1
-      for(var item of this.optionsP){
-        if(e[index] == item.value){
-          row = item
-        }
-        for(var items of item.children){
-          if(e[index] == items.value){
-            row = items
-          }
-        }
-      }
-      this.ruleForm.goodsCode = row.value
-      this.ruleForm.goodsName = row.oilName
-      this.ruleForm.abbreviate = row.abbreviate
-      this.ruleForm.id = row.id;
-    },
+
     // 查询油站列表
     searchDepart(){
       this.getOilLists()
     },
-    // 提交
-    submitForm(formName) {
-      var ischecked=true
-      this.$refs[formName].validate((valid) => {
-        console.log(valid)
-        if (valid) {
-              
-          } else {
-            ischecked = false
-          }
-        });
-        if(ischecked){
-          saveOilType(this.ruleForm).then(res =>{
-                  if(res.code==0){
-                    this.activeName="OliList"
-                    this.$message({
-                      type: 'success',
-                      message: '添加成功!'
-                    });
-                    this.ruleForm={
-                      abbreviate:"",
-                      goodsCode:"",
-                      goodsName:"",
-                      price:"",
-                      goodsDetails:"",
-                      id:"",
-                    }
-                  }else{
-                    this.$message({
-                      type: 'info',
-                      message: res.msg
-                    });
-                  } 
-              })
-        }
-      },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    // 调价
-    updataPrice(index,row){
-      this.oilTypeName = row.goodsName
-      this.oldPrice = row.price
-      this.id = row.id
-      getGun(row.id).then(res =>{
-        var gunLists = res.guns;
-        gunLists.forEach((item,index)=>{
-          item.value = item.id
-          item.label = "枪号"+item.gunNo + "  当前价格" +item.price
-        })
-      this.gunOptions = gunLists
-      })
-      this.dialogVisible=true
-    },
-    tiaojia(){
-      var obj={
-        goodsName:this.oilTypeName,
-        gunIds:this.gunValue.toString(),
-        id:this.id,
-        newPrice:this.newPrice,
-        price:this.oldPrice,
-      }
-
-      var price = stores.testMoney(this.newPrice)
-      if(!price){
-        this.$message({
-                      type: 'info',
-                      message: '请输入正确的价格!'
-                    });
-                    return
-      }
-      if(!this.gunValue){
-        this.$message({
-                      type: 'info',
-                      message: '请选择油枪!'
-                    });
-                    return
-      }
-      updataPrice(obj).then(res => {
-        console.log(res)
-        if(res.code == 0){
-          this.$message({
-                      type: 'info',
-                      message:res.msg
-                    });
-                    this.oilTypeName = ""
-                    this.gunValue = ""
-                    this.id = ""
-                    this.newPrice = ""
-                    this.oldPrice = ""
-                    this.dialogVisible=false
-        }
-        
-      })
-    },
-    // 删除
-    delStatusRow(index, row){
-      var _this = this
-			var id = [row.id]
-      this.$confirm('确定要删除此司机吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-            delOilType(id).then(r =>{
-              if (r.code == 0) {
-                _this.$message({
-                  type: 'success',
-                  message: status+'成功!'
-                });
-                 _this.getOilLists();
-              } else {
-                alert(r.msg);
-              }
-            })
-          
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消操作'
-          });          
-        });
-    },
+    
     // 获取油品列表
     getOilLists(e){
-      getOilList({
+      stores.getList({
         page:this.currentPage,
         limit:this.pageSize,
+        staTime:this.startTime,
+        endTime:this.endTime,
+
         orgCode:this.orgCodeValue?this.orgCodeValue:this.orgCodeValue1,
-        goodsCode:this.goodsCode,
-        goodsName:this.goodsName,
-      }).then(res =>{
-        // console.log(res)
+        sname:this.sname,
+        authType:"1",
+      },"auth/yfybvehauthinfo/list").then(res =>{
         var list = res.page.list;
         var size = res.page.totalCount;
         this.sizeLength = size;
@@ -420,17 +275,6 @@ export default {
       })
     },
     handleClick(tab, event) {
-      if(tab.label == "加油列表"){
-          this.ruleForm={
-                    abbreviate:"",
-                      goodsCode:"",
-                      goodsName:"",
-                      price:"",
-                      goodsDetails:"",
-                      id:"",
-                }
-        this.getOilLists()
-      }
     },
     // 下一页
     handleCurrentChange(e){
@@ -478,8 +322,7 @@ export default {
   }
   .l-display-item{
     display: flex;
-    justify-content: space-between;
-    /* flex-direction: column; */
+    justify-content: space-around;
     align-items: center;
     margin: 16px 0;
   }

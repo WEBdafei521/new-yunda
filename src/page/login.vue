@@ -122,6 +122,7 @@ export default {
                     localStorage.setItem("tokens", res.token);
                     var pathKey = sessionStorage.getItem("pathKey")
                     if(pathKey){
+                      console.log(pathKey)
                       _this.$router.push(pathKey)
                     }else{  
                       _this.$router.push('/main')

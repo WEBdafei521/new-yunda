@@ -71,7 +71,7 @@
           
         </div>
         <!-- main - main -->
-        <div class="l-main-index" :style="{width:'100%',height:screenHeight-46+'px',}" style="boxSizing:border-box;">
+        <div class="l-main-index" :style="{width:indexWidth+'%',height:screenHeight-46+'px',}" style="boxSizing:border-box;">
           <transition>
             <router-view/>
           </transition>
@@ -91,6 +91,7 @@ export default {
   data () {
     return {
       isCollapse: false,
+      indexWidth:"100",
       menuList:[],
       default_active_index:"0-0",
       // 用户信息弹框
@@ -103,6 +104,7 @@ export default {
     };
   },
  created(){
+    this.screenHeight = document.documentElement.clientHeight || document.body.clientHeight
    this.userInfo = JSON.parse(this.$store.getters.get_yd_user_info);
    this.navList()
    var pathKey = sessionStorage.getItem("pathKey")
@@ -153,7 +155,7 @@ export default {
       // 校验修改密码信息
       
       handleOpen(key, keyPath) {
-        // console.log(key, keyPath);
+        console.log(key, keyPath);
       },
       handleSelect(key, keyPath) {
         sessionStorage.setItem("pathKey",key)
@@ -178,11 +180,26 @@ export default {
  },
  mounted(){
    var _this = this
-    window.onresize = function () { // 定义窗口大小变更通知事件
+    window.onresize = function () {
+      var clientWidth = document.documentElement.clientWidth || document.body.clientWidth
+      if(clientWidth<=1400){
+        _this.isCollapse = true
+      }else{
+        _this.isCollapse = false
+      }
+     // 定义窗口大小变更通知事件
       _this.screenHeight = document.documentElement.clientHeight || document.body.clientHeight // 窗口高度
     }
  },
- computed:{},
+ computed:{
+   
+ },
+ watch: {
+    isCollapse(newName, oldName) {
+      this.indexWidth = 99.9;
+      return 
+    }
+  }
 }
 </script>
 <style scoped>
