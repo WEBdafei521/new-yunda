@@ -384,3 +384,20 @@ export function getList(data,url){
     params: data,
   })
 }
+// 全局添加方法
+export function add(data,url){
+  return Service({
+    url: url,
+    method:"post",
+    data: data,
+  })
+}
+// 全局修改方法
+export function updata(data,url){
+  return Service({
+    url: url,
+    method:"post",
+    data: data,
+  })
+}
+// 

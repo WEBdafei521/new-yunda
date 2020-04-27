@@ -153,7 +153,7 @@ const router = new Router({
         // 标签管理
         {
           path: '/modules/goods/yfystagtype0',
-          name: 'yfystag',
+          name: 'yfystagtype0',
           component: resolve => {require(['../page/modules/goods/yfystagtype0'], resolve)},
           meta:{
             isLogin:true
@@ -162,7 +162,7 @@ const router = new Router({
         // 标签分配
         {
           path: '/modules/goods/yfystagtype1',
-          name: 'yfystag',
+          name: 'yfystagtype1',
           component: resolve => {require(['../page/modules/goods/yfystagtype1'], resolve)},
           meta:{
             isLogin:true
@@ -192,6 +192,52 @@ const router = new Router({
           path: '/modules/equipment/yfysgun',
           name: 'yfystag',
           component: resolve => {require(['../page/modules/equipment/yfysgun'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+      // 授权管理
+        // 车辆计划授权管理
+        {
+          path: '/modules/auth/yfybvehauthtype0',
+          name: 'yfystag',
+          component: resolve => {require(['../page/modules/auth/yfybvehauthtype0'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+        // 司机计划授权管理
+        {
+          path: '/modules/auth/yfybvehauthtype1',
+          name: 'yfystag',
+          component: resolve => {require(['../page/modules/auth/yfybvehauthtype1'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+        // 临时授权管理
+         {
+          path: '/modules/oilOrder/yfytoilorder',
+          name: 'yfystag',
+          component: resolve => {require(['../page/modules/oilOrder/yfytoilorder'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+        // 车辆授权修改记录
+        {
+          path: '/modules/auth/yfybvehauthinfotype0',
+          name: 'yfystag',
+          component: resolve => {require(['../page/modules/auth/yfybvehauthinfotype0'], resolve)},
+          meta:{
+            isLogin:true
+          },
+        },
+        // 司机授权修改记录
+        {
+          path: '/modules/auth/yfybvehauthinfotype1',
+          name: 'yfystag',
+          component: resolve => {require(['../page/modules/auth/yfybvehauthinfotype1'], resolve)},
           meta:{
             isLogin:true
           },

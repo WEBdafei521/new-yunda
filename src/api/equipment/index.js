@@ -70,3 +70,28 @@ export function updataControlInfo(data) {
   })
 }
 
+// 油枪管理 调价
+export function updataPrice(data) {
+  return Service({
+    url: "equipment/yfysgun/updatePrice",
+    method:"post",
+    data: data,
+  })
+}
+// 下发配置
+export function setPeizhi(data) {
+  return Service({
+    url: "equipment/yfysgun/setConfig",
+    method:"post",
+    data: data,
+  })
+}
+// 下发配置
+export function getOilGunInfo(data) {
+  return Service({
+    url: "equipment/yfysgun/saveInfo",
+    method:"post",
+    data: data,
+  })
+}
+

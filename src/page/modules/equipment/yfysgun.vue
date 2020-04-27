@@ -3,12 +3,13 @@
   <div>
       <div class="animated slideInRight  delay-1s">
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-          <div class="l-display">
+          
+          <el-tab-pane label="油枪列表" name="OliList" class=""> 
+            <div class="l-display">
               <h5 style="color:#000;margin:0 10px;">枪号</h5>
               <el-input v-model="inputValue" style="width:200px;"></el-input>
               <el-button type="primary" style="height:40px;line-height:0px;margin:0 16px;" @click="searchDepart">查询</el-button>
             </div>
-          <el-tab-pane label="油枪列表" name="OliList" class=""> 
             <div class="block">
               <el-table
                 :data="tableData"
@@ -63,7 +64,7 @@
                   width="400">
                   <template slot-scope="scope">
                     <el-button type="primary" @click="updataPrice(scope.$index, scope.row)">调价</el-button>
-                    <el-button type="primary" @click="updata(scope.$index, scope.row)">下发配置</el-button> 
+                    <el-button type="primary" @click="setPeizhis(scope.$index, scope.row)">下发配置</el-button> 
                     <el-button type="primary" @click="updata(scope.$index, scope.row)">修改</el-button> 
                     <el-button type="danger" @click="delStatusRow(scope.$index, scope.row)">删除</el-button> 
                   </template>
@@ -78,15 +79,15 @@
                   
                   <div class="l-display-item">
                     <h5 class="l-display-item" style="color:#000;">油枪号</h5>
-                    <el-input disabled v-model="gunNo" style="width:200px;"></el-input>
+                    <el-input disabled v-model="updataPrices.gunNo" style="width:200px;"></el-input>
                   </div>
                   <div class="l-display-item">
                     <h5 class="l-display-item" style="color:#000;">原始单价<span>(元/升)</span></h5>
-                    <el-input disabled v-model="oldPrice" style="width:200px;"></el-input>
+                    <el-input disabled v-model="updataPrices.oldPrice" style="width:200px;"></el-input>
                   </div>
                   <div class="l-display-item">
                     <h5 class="l-display-item" style="color:#000;">新价格 <span>(元/升)</span></h5>
-                    <el-input v-model="newPrice" style="width:200px;"></el-input>
+                    <el-input v-model="updataPrices.newPrice" style="width:200px;"></el-input>
                   </div>
                 </div>
                 
@@ -110,67 +111,77 @@
           </el-tab-pane>
 
           <el-tab-pane :label="oilType" name="addList">
-            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-              <!-- 进油单号 -->
-              <el-form-item label="进油单号" prop="purchaseOrderNum" class="animated slideInRight  delay-.1s">
-                <el-input v-model="ruleForm.purchaseOrderNum"></el-input>
+            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="200px" class="demo-ruleForm">
+              <!-- 枪号 -->
+              <el-form-item label="枪号" prop="gunNo" class="animated slideInRight  delay-.1s">
+                <el-input disabled v-model="ruleForm.gunNo"></el-input>
               </el-form-item>
-              <!-- 承运商 -->
-              <el-form-item  label="承运商" prop="carrier" class="animated slideInRight  delay-.1s">
-                <el-input v-model="ruleForm.carrier"></el-input>
+              <!-- 智能控制 -->
+              <el-form-item  label="智能控制" prop="controllerNo" class="animated slideInRight  delay-.1s">
+                <el-select v-model="ruleForm.controllerNo" placeholder="请选择" style="width: 300px;" @change="controllerSelect"> 
+                  <el-option v-for="item in controllerOptions" :key="item.id" :label="item.controllerNo" :value="item"></el-option>
+                </el-select>
               </el-form-item>
-              <!-- 原发体积(L) -->
-              <el-form-item label="原发体积(L)" prop="primaryVolume" class="animated slideInRight  delay-.1s">
-                <el-input v-model="ruleForm.primaryVolume"></el-input>
-              </el-form-item>
-              <!-- 油罐车号 -->
-              <el-form-item label="油罐车号" prop="oiltankCarNo" class="animated slideInRight  delay-.1s">
-                <el-input v-model="ruleForm.oiltankCarNo"></el-input>
-              </el-form-item>
-              <!-- 计量员 -->
-              <el-form-item label="计量员" prop="meteringStaff" class="animated slideInRight  delay-.1s">
-                <el-input v-model="ruleForm.meteringStaff"></el-input>
-              </el-form-item>
-
-              <!-- 进油日期 -->
-              <el-form-item label="进油日期" prop="purchaseDate" class="animated slideInRight  delay-.1s">
-                  <el-date-picker
-                    style="width:100%;"
-                    v-model="ruleForm.purchaseDate"
-                    type="date"
-                    format="yyyy 年 MM 月 dd 日"
-                    value-format="yyyy-MM-dd"
-                    placeholder="选择进油日期">
-                  </el-date-picker>
-              </el-form-item>
-              <!-- 承运司机 -->
-              <el-form-item label="承运司机" prop="carrierDriver" class="animated slideInRight  delay-.1s">
-                <el-input v-model="ruleForm.carrierDriver"></el-input>
-              </el-form-item>
-              <!-- 卸入油罐 -->
-              <el-form-item label="卸入油罐" prop="unloadOiltank" class="animated slideInRight  delay-.1s">
-                <el-select @change="selectTank" v-model="ruleForm.unloadOiltank" placeholder="请选择">
-                  <el-option
-                    style="width:100%;"
-                    v-for="(item,index) of oilTypeList"
-                    :key="index"
-                    :label="'油罐号:' + item.label"
-                    :value="item.label">
-                    <span style="float: left">{{ item.label }}</span>
-                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+              <!-- 罐号(L) -->
+              <el-form-item label="罐号" prop="tankNo" class="animated slideInRight  delay-.1s">
+                <el-select v-model="ruleForm.tankNo" placeholder="请选择" style="width: 300px;" @change="tankSelect">
+                  <el-option v-for="item in tankList" :key="item.id" :label="item.tankNo" :value="item">
+                    <span style="float: left">罐号:{{item.tankNo}}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{item.goodsName}}</span>
                   </el-option>
                 </el-select>
               </el-form-item>
-              <!-- 供应商 -->
-              <el-form-item label="供应商" prop="supplier" class="animated slideInRight  delay-.1s">
-                <el-input v-model="ruleForm.supplier"></el-input>
+              <!-- 油品名 -->
+              <el-form-item label="油品名" prop="goodsName" class="animated slideInRight  delay-.1s">
+                <el-input disabled v-model="ruleForm.goodsName"></el-input>
               </el-form-item>
-              <!-- 实际卸油(L) -->
-              <el-form-item label="实际卸油(L)" prop="unloadOilNum" class="animated slideInRight  delay-.1s">
-                <el-input v-model.number="ruleForm.unloadOilNum"></el-input>
+              <!-- 协议 -->
+              <el-form-item label="协议" prop="typeNumber" class="animated slideInRight  delay-.1s">
+                <el-select v-model="ruleForm.typeNumber" placeholder="请选择" style="width: 300px;" @change="numberSelect">
+                  <el-option v-for="item in numberOptions" :key="item.number" :label="item.protocolType"  :value="item">
+                    <span style="float: left">编号:{{item.number}}</span>
+                    <span style="float: right"> {{item.protocolType}}</span>
+                  </el-option>
+                </el-select>
               </el-form-item>
-            
 
+              <!-- 工作模式 -->
+              <el-form-item label="工作模式" prop="workMode" class="animated slideInRight  delay-.1s">
+                <el-select v-model="ruleForm.workMode" placeholder="请选择" style="width: 300px;">
+                  <el-option v-for="item in workModeOptions" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+
+              <!-- GPS上传模式 -->
+              <el-form-item label="GPS上传模式" prop="gpsUpload" class="animated slideInRight  delay-.1s">
+                <el-select v-model="ruleForm.gpsUpload" placeholder="请选择" style="width: 300px;" @change="GPSSelect">
+                  <el-option v-for="item in GPSUploadOptions" :key="item.number" :label="item.label"  :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <!-- 上传GPS数据时间间隔 -->
+              <el-form-item label="上传GPS数据时间间隔(秒)" prop="gpsUploadTime" class="animated slideInRight  delay-.1s" v-show="ruleForm.gpsStatusFlag">
+                <el-input v-model="ruleForm.gpsUploadTime"></el-input>
+              </el-form-item>
+              <!-- 是否上传实时数据 -->
+              <el-form-item label="是否上传实时数据" prop="statusUpload" class="animated slideInRight  delay-.1s">
+                <el-select v-model="ruleForm.statusUpload" placeholder="请选择" style="width: 300px;" @change="ModelSelect">
+                  <el-option v-for="item in modelOptions" :key="item.value" :label="item.label"  :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <!-- 上传实时数据时间间隔(L) -->
+              <el-form-item label="上传实时数据时间间隔(秒)" prop="statusUploadTime" class="animated slideInRight  delay-.1s" v-show="ruleForm.statusFlag">
+                <el-input v-model.number="ruleForm.statusUploadTime"></el-input>
+              </el-form-item>
+              <el-form-item label="M1卡扇区号" prop="sector" label-width="200px"  v-show="false">
+                <el-input v-model="ruleForm.sector" style="width: 300px;"></el-input>
+              </el-form-item>
+              <el-form-item label="白名单版本号" prop="WList" label-width="200px"  v-show="false">
+                <el-input v-model="ruleForm.WList" style="width: 300px;"></el-input>
+              </el-form-item>
+  
               <!-- 提交 -->
               <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -184,22 +195,66 @@
 </template>
 
 <script>
-import {getOilRecordList,delOilRecord,getOilList,saveOilRecord,updataOilInfo} from '../../../api/oilRecord/index';
+import {updataPrice,setPeizhi,getOilGunInfo} from '../../../api/equipment/index';
 
 import * as stores from '../../../store/methods'
 export default {
   data () {
+    
     return {
       oilType:"添加",
       activeName: 'OliList',
-      oilTypeList: [],
       inputValue:"",
       dialogVisible:false,
       
       // 调价数据
-      gunNo:"",
-      oldPrice:"",
-      newPrice:"",
+      updataPrices:{
+        gunNo:"",
+        oldPrice:"",
+        newPrice:"",
+        controllerNo:"",
+        id:"",
+      },
+      // 协议
+      numberList:[],
+      // 罐列表
+      tankList:[],
+      // 智能控制器 列表
+      controllerOptions:[],
+      // 协议
+      numberOptions:[],
+      // 工作模式
+      workModeOptions:[
+        {
+          value:'00',
+          label:"启用"
+        },
+        {
+          value:'01',
+          label:"停用"
+        },
+      ],
+      // GPS上传模式
+      GPSUploadOptions:[
+        {
+          value:'00',
+          label:"不主动上传"
+        },
+        {
+          value:'01',
+          label:"主动上传"
+        }
+      ],
+      modelOptions:[
+        {
+          value:'00',
+          label:"不实时上传"
+        },
+        {
+          value:'01',
+          label:"实时上传"
+        }
+      ],
 
       sizeLength:0,
       currentPage:"1",
@@ -207,24 +262,39 @@ export default {
       tableData: [],
 
       ruleForm: {
+        statusFlag:true,
+        gpsStatusFlag:true,
+        gunNo:"",
+        controllerNo:"",
+        tankNo:"",
+        goodsName:"",
+        typeNumber:"",
+        gpsUpload:"01",
+        statusUpload:"01",
+
+        gpsUploadTime:60,
+        statusUploadTime:30,
+
+        sector:"0B",
+        workMode:"00",
+        WList:"00",
       },
       rules: {
-          purchaseOrderNum: [
-            { required: true, message: '请输入进油单号', trigger: 'blur' },
-            { min: 5, max: 10, message: '请输入正确的进油单号', trigger: 'blur' }
+          controllerNo: [
+            { required: true, message: '请选择只能控制器', trigger: 'blur' },
           ],
-          purchaseDate: [
-            { required: true, message: '请选择进油日期', trigger: 'blur' }
+          tankNo: [
+            { required: true, message: '请选择智能控制器', trigger: 'blur' }
           ],
-          unloadOiltank: [
-            { required: true, message: '请选择所卸入的油罐', trigger: 'blur' },
-            { min: 1, max: 10, message: '请输入正确油罐', trigger: 'blur' }
+          typeNumber: [
+            { required: true, message: '请选择协议', trigger: 'blur' },
           ],
       },  
     };
   },
   created(){
     this.getList()
+    
   },
   components: {},
 
@@ -232,25 +302,114 @@ export default {
 
 
   methods: {
+    GPSSelect(e){
+      if(e=="00"){
+        this.ruleForm.gpsStatusFlag = false
+      }else{
+        this.ruleForm.gpsStatusFlag = true
+      }
+    },
+    ModelSelect(e){
+      if(e=="00"){
+        this.ruleForm.statusFlag = false
+      }else{
+        this.ruleForm.statusFlag = true
+      }
+    },
+    // 油罐选择
+    tankSelect(e){
+      this.ruleForm.price = e.price
+			this.ruleForm.tankNo = e.tankNo
+      this.ruleForm.goodsName = e.goodsName
+      this.ruleForm.tankId = e.id
+    },
+    // 选择智能控制器
+    controllerSelect(val){
+			this.ruleForm.controllerId = val.id
+			this.ruleForm.controllerNo = val.controllerNo
+    },
+    // 选择协议
+    numberSelect(val){
+        this.ruleForm.typeNumber = val.number
+    },
+    addInfo(){
+      getOilGunInfo().then(res => {
+        this.tankList = res.data.tankList
+        this.numberOptions = res.data.numberList
+        this.ruleForm.gunNo = res.data.gunNo
+        this.controllerOptions = res.data.controllerList
+        
+      })
+    },
     // 调价
     updataPrice(index,row){
-      console.log(row)
       this.dialogVisible = true
+      this.updataPrices.gunNo = row.gunNo
+      this.updataPrices.oldPrice = row.price
+      this.updataPrices.controllerNo = row.controllerNo
+      this.updataPrices.id = row.id
     },
-    // 选择油品
-    selectTank(e){ 
-      this.unloadOiltankid = e
+    // 下发配置
+    setPeizhis(index,row){
+      setPeizhi(row).then(res => {
+        if(res.code == 0){
+          this.$message({
+                      type: 'success',
+                      message: '操作成功!'
+                    });
+        }else{
+          this.$message({
+                      type: 'info',
+                      message: res.msg
+                    });
+        }
+      })
     },
+ 
     searchDepart(){
       this.getList()
     },
- 
+    tiaojia(){
+      this.dialogVisible = false
+       var isMoney = stores.testMoney(this.updataPrices.newPrice)
+        if (!isMoney || this.updataPrices.newPrice=="") {
+          this.$message({
+                      type: 'danger',
+                      message: '请输入正确的价格!'
+                    });
+                    this.updataPrices.newPrice = ""
+                    return
+        }else{
+          updataPrice(this.updataPrices).then(res => {
+            if(res.code == 0){
+              this.$message({
+                          type: 'success',
+                          message: '操作成功!'
+                        });
+            }else{
+              this.$message({
+                          type: 'info',
+                          message: res.msg
+                        });
+            }
+          })
+        }
+    },
     // 提交
     submitForm(formName) {
+      // console.log(this.ruleForm)
+      // return
+      var ischecked=true
       this.$refs[formName].validate((valid) => {
-          if (valid) {
-            if(this.oilType == "修改"){
-              updataOilInfo(this.ruleForm).then(res =>{
+        if (valid) {
+              
+          } else {
+            ischecked = false
+          }
+        });
+        if(ischecked){
+          if(this.oilType == "修改"){
+              stores.updata(this.ruleForm,"equipment/yfysgun/update").then(res =>{
                   if(res.code==0){
                     this.activeName="OliList"
                     this.oilType = "添加"
@@ -259,22 +418,28 @@ export default {
                       message: '添加成功!'
                     });
                     this.ruleForm={
-                        purchaseOrderNum:"",
-                        carrier:"",
-                        primaryVolume:"",
-                        oiltankCarNo:"",
-                        meteringStaff:"",
-                        purchaseDate:"",
-                        carrierDriver:"",
-                        unloadOiltank:"",
-                        supplier:"",
-                        unloadOilNum:"",
-                        unloadOiltankid:""
+                        statusFlag:true,
+                        gpsStatusFlag:true,
+                        gunNo:"",
+                        controllerNo:"",
+                        tankNo:"",
+                        goodsName:"",
+                        typeNumber:"",
+                        gpsUpload:"01",
+                        statusUpload:"01",
+
+                        gpsUploadTime:60,
+                        statusUploadTime:30,
+
+                        sector:"0B",
+                        id:"",
+                        workMode:"00",
+                        WList:"00",
                     }
                   }
               })
             }else{
-              saveOilRecord(this.ruleForm).then(res =>{
+              stores.add(this.ruleForm,"equipment/yfysgun/save").then(res =>{
                   if(res.code==0){
                     this.activeName="OliList"
                     this.oilType = "添加"
@@ -283,40 +448,37 @@ export default {
                       message: '添加成功!'
                     });
                     this.ruleForm={
-                        purchaseOrderNum:"",
-                        carrier:"",
-                        primaryVolume:"",
-                        oiltankCarNo:"",
-                        meteringStaff:"",
-                        purchaseDate:"",
-                        carrierDriver:"",
-                        unloadOiltank:"",
-                        supplier:"",
-                        unloadOilNum:"",
-                        unloadOiltankid:""
+                        statusFlag:true,
+                        gpsStatusFlag:true,
+                        gunNo:"",
+                        controllerNo:"",
+                        tankNo:"",
+                        goodsName:"",
+                        typeNumber:"",
+                        gpsUpload:"01",
+                        statusUpload:"01",
+
+                        gpsUploadTime:60,
+                        statusUploadTime:30,
+
+                        sector:"0B",
+                        id:"",
+                        workMode:"00",
+                        WList:"00",
                     }
-                  }else{
-                    this.$message({
-                      type: 'info',
-                      message: res.msg
-                    });
                   }
               })
             }
-          } else {
-            return false;
-          }
-        });
-        
-        
+        }
+    
       },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
     // 修改部门信息
     updata(index,row){
+      this.addInfo()
       this.ruleForm = row;
-      // console.log(row)
       this.activeName = "addList"
       this.oilType = "修改"
     },
@@ -364,7 +526,10 @@ export default {
         this.tableData = list;
       })
     },
+
+
     handleClick(tab, event) {
+      this.addInfo()
       if(tab.label == "油枪列表"){
         this.oilType = "添加";
           this.ruleForm={
