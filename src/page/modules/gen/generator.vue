@@ -11,7 +11,7 @@
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
           <el-tab-pane label="加油站列表" name="OliList"> 
             <div class="block">
-              <span class="demonstration">完整功能</span>
+              <span class="demonstration">代码生成——开发使用</span>
               <!-- <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
@@ -49,7 +49,7 @@ export default {
   methods: {
      handleClick(tab, event) {
         console.log(tab, event);
-      }
+      },
   }
 }
 

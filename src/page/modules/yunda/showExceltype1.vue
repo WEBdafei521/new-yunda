@@ -1,58 +1,176 @@
 <!--  -->
 <template>
   <div>
-      <div class="my_display">
-        <h5 style="color:#555;margin-right:10px;">加油站名</h5>
-        <el-input v-model="input" style="width:220px;height:35px;margin-right:10px;" clearable placeholder="请输入内容"></el-input>
-        <el-button type="primary" style="height:40px;line-height:0px;">查询</el-button>
-      </div>
-
-      <div>
-        <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-          <el-tab-pane label="加油站列表" name="OliList"> 
+      <div class="animated slideInRight  delay-1s">
+        <el-tabs v-model="activeName" type="border-card">
+          <el-tab-pane label="加油统计" name="OliList" class=""> 
+            <div class="l-display">
+              <h5 style="color:#000;margin:0 10px;">时间</h5>
+              <el-date-picker
+                @change="selectTime"
+                v-model="value2"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="pickerOptions"
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd">
+              </el-date-picker>
+              <h5 style="color:#000;margin:0 10px;">司机</h5>
+              <el-input v-model="driver" style="width:220px;height:40px;margin-right:10px;" clearable placeholder="请输入司机名称"></el-input>
+              
+              <el-button type="primary" style="height:40px;line-height:0px;margin:0 16px;" @click="searchDepart">查询</el-button>
+            </div>
             <div class="block">
-              <span class="demonstration">完整功能</span>
-              <!-- <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="currentPage4"
-                :page-sizes="[20, 40, 60, 80]"
-                :page-size="7"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="sizeLength">
-              </el-pagination> -->
+              <div v-html="tables">
+
+              </div>
             </div>
             
           </el-tab-pane>
-          <el-tab-pane label="添加" name="addList">配置管理</el-tab-pane>
-        </el-tabs>
 
+        </el-tabs>
       </div>
   </div>
 </template>
 
 <script>
+import * as stores from '../../../store/methods'
 export default {
   data () {
     return {
-      input:"",
       activeName: 'OliList',
-      sizeLength:50
+     
+      pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
+      value2:"",
+      startTime:"",
+      endTime:"",
+      tables:"",
+      goodsCode:"",
+      driver:"",
+      // 选择油品类型
+      optionsP:[],
+      defaultParams: {
+         label: 'name',
+         value: 'id',
+         children: 'children'
+      },
+
+      
     };
   },
-
+  created(){
+    this.getOilLists()
+    this.getOilTypeList()
+  
+  },
   components: {},
 
   computed: {},
 
 
   methods: {
-     handleClick(tab, event) {
-        console.log(tab, event);
-      }
+    selectTime(e){
+      this.startTime = e[0]
+      this.endTime = e[1]
+    },
+    getOilTypeList(){
+      stores.setCarRule().then(res=>{
+        this.optionsP = res
+      })
+    },
+   
+
+    // 查询油站列表
+    searchDepart(){
+      this.getOilLists()
+    },
+    
+    // 获取油品列表
+    getOilLists(e){
+      stores.getList({
+        startTime:this.startTime,
+        endTime:this.endTime,
+        exportType:"1",
+        driver:this.driver,
+        lpn:""
+      },"yunda/yfytoiltrade/showExcel").then(res =>{
+        this.tables = res;
+      })
+    },
+
+    
   }
 }
 
 </script>
 <style scoped>
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 300px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .l-display{
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+  }
+  .l-display-item{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 16px 0;
+  }
+  .l-display-cum{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
 </style>
