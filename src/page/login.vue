@@ -37,8 +37,10 @@
 <script>
 import particles from '../components/Li-particles'
 var baseUrl="http://121.199.72.39:8080/";
+// var baseUrl="http://192.168.19.25:8080/";
 import {indexNav} from '../api/request'
 import { Message, Loading } from 'element-ui'
+import * as stores from '../store/methods'
 // import { Loadings } from '../public/loading'
 import {loginIn} from '../api/request'
 export default {
@@ -70,8 +72,8 @@ export default {
     // 获取验证
     this.changeImg()
   },
-   methods: {
-     onSubmit(){
+  methods: {
+      onSubmit(){
           var _this=this;
           if(!this.isClick){
             _this.isClick=true
@@ -88,7 +90,7 @@ export default {
           }
           
       },
-     changeImg(){
+      changeImg(){
           this.randomStr = Math.floor(Math.random()*999999999);
           this.imgSrc=baseUrl+"sys/code/"+this.randomStr;
       },
@@ -108,27 +110,13 @@ export default {
         loginIn(data).then(res=>{
             _this.isClick=false;
             if(res.code == 0){//登录成功
-                     Message({
-                        message: '登录成功',
-                        type: 'success',
-                        duration: 3 * 1000
-                    })
-                    // 同步存储token到vuex当中 使用的是mutations
-                    _this.$store.commit('SET_TOKEN',res.token);
-                    _this.$store.commit('SET_USER_INFO',res.user);
-                    _this.$store.commit('SET_USER_DEPT',res.dept);
-					          localStorage.setItem("yd_user_info", JSON.stringify(res.user));
-                    localStorage.setItem("yd_user_dept", JSON.stringify(res.dept));
-                    localStorage.setItem("tokens", res.token);
-                    var pathKey = sessionStorage.getItem("pathKey")
-                    if(pathKey){
-                      console.log(pathKey)
-                      _this.$router.push(pathKey)
-                    }else{  
-                      _this.$router.push('/main')
-                    }
-                    
-                  
+              stores.getMenList()
+              Message({
+                message: '登录成功',
+                type: 'success',
+                duration: 3 * 1000
+              })
+              stores.LOGIN_IN(res)
 		        }else{
                     Message({
                         message: '网络错误' + res.msg,

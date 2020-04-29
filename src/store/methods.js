@@ -3,23 +3,48 @@ import store from "./index"
 import province from "../page/js/province.json"
 import city from "../page/js/city"
 import list from "../page/js/list"
-import { updatePwd,mainInfo,getStationNumber} from '../api/request'
+import { updatePwd,mainInfo,getStationNumber,indexNav} from '../api/request'
 import {getMenuTree} from '../api/role/index'
 import {getDepartList} from '../api/sysUser/index'
 import {getOilList} from '../api/yfyVehicle/index'
 import {Service} from '../api/Server'
-export function LOGIN_OUT(Vue, options) {
-    console.log("调用了LOGIN_OUT")
-        sessionStorage.removeItem('tokens');
-        sessionStorage.removeItem('itemPath');
-        sessionStorage.removeItem('indexPath');
-        localStorage.removeItem("yd_user_info");
-        localStorage.removeItem("yd_user_dept");
-        localStorage.removeItem("tokens");
-        store.dispatch("REMOTE_TOKENS")
-        store.dispatch("REMOTE_USERS_INFO")
-        store.dispatch("REMOTE_USERS_DEPT")
-        router.push({path:'/login'});
+
+function login_outs(){
+  return Service({
+    url: "sys/logout",
+    method:"post"
+  })
+}
+export function LOGIN_OUT() {
+        login_outs().then(res => {
+          console.log(res)
+          if(res.code == 0){
+            sessionStorage.removeItem('tokens');
+            sessionStorage.removeItem('itemPath');
+            sessionStorage.removeItem('indexPath');
+            sessionStorage.removeItem("yd_user_info");
+            sessionStorage.removeItem("yd_user_dept");
+            store.dispatch("REMOTE_TOKENS")
+            store.dispatch("REMOTE_USERS_INFO")
+            store.dispatch("REMOTE_USERS_DEPT")
+            router.push({path:'/login'});
+          }
+        })
+};
+export function LOGIN_IN(res) {
+  // 同步存储token到vuex当中 使用的是mutations
+  store.commit('SET_TOKEN',res.token);
+  store.commit('SET_USER_INFO',res.user);
+  store.commit('SET_USER_DEPT',res.dept);
+  sessionStorage.setItem("yd_user_info", JSON.stringify(res.user));
+  sessionStorage.setItem("yd_user_dept", JSON.stringify(res.dept));
+  sessionStorage.setItem("tokens", res.token);
+  var urls = sessionStorage.getItem("urls")
+                    if(urls){
+                      router.push("/"+urls)
+                    }else{  
+                      router.push('/main')
+                    }
 };
 // 拼接导航栏数据结构
 export function setMenuList(menuList){
@@ -33,6 +58,18 @@ export function setMenuList(menuList){
     }
 
     return list
+}
+export function getMenList(){
+  return new Promise((resolve, reject) =>{  
+    indexNav().then(res=>{
+      if(res.code==0){
+        var list = setMenuList(res.menuList)
+        store.dispatch("SET_MENU_LIST",list)
+        sessionStorage.setItem("menuList",list)
+        resolve(list);
+      }
+    })
+  })
 }
 // 获取菜单列表
 export function getMenUrl(menuList,key){
@@ -107,12 +144,12 @@ export function checkedInpVal(oldPwd,newPwd){
   }
   // 获取用户个人信息 yd_user_info
 export function getLoginUser(){
-    var user = JSON.parse(localStorage.getItem("yd_user_info"))
+    var user = JSON.parse(sessionStorage.getItem("yd_user_info"))
     return user;
 }
 // 获取部门信息 yd_user_dept
 export function getLoginDept(){
-  var dept = JSON.parse(localStorage.getItem("yd_user_dept"))
+  var dept = JSON.parse(sessionStorage.getItem("yd_user_dept"))
   return dept;
 }
 // 获取油站列表 用于显示首页

@@ -4,7 +4,8 @@ Vue.use(Vuex);
 const state={//要设置的全局访问的state对象
     tokens: localStorage.getItem('tokens') ? localStorage.getItem('tokens') : '',
     yd_user_info:{},
-    yd_user_dept:{}
+    yd_user_dept:{},
+    yd_menu_list:[]
 };
 const getters = {   //实时监听state值的变化(最新状态) 使用方法：  this.$store.getters.aaa;
     nowToken(state) {
@@ -15,7 +16,10 @@ const getters = {   //实时监听state值的变化(最新状态) 使用方法�
         return state.yd_user_info
     },
     get_yd_user_dept(state) {
-        return state.get_yd_user_dept
+        return state.yd_user_dept
+    },
+    get_yd_menu_list(state) {
+        return state.yd_menu_list
     }
 };
 const mutations = { //同步修改state中的值，使用方法：this.$store.commit('方法名'，value)
@@ -27,6 +31,9 @@ const mutations = { //同步修改state中的值，使用方法：this.$store.co
     },
     SET_USER_DEPT(state,userDept) {
         state.yd_user_dept = userDept
+    },
+    SET_MENU_LIST(state,menu) {
+        state.yd_menu_list = menu
     },
     REMOTE_TOKEN(state) {
         state.tokens = ""
@@ -44,6 +51,9 @@ const actions = { //异步调用mutation中的方法，使用方法：this.$stor
     },
     SET_USERS_DEPT(context,userDept) {  //自定义触发mutations里函数的方法，context与store 实例具有相同方法和属性
         context.commit('SET_USER_DEPT',userDept);
+    },
+    SET_MENU_LIST(context,menu) {  //自定义触发mutations里函数的方法，context与store 实例具有相同方法和属性
+        context.commit('SET_MENU_LIST',menu);
     },
     REMOTE_TOKENS(context) {
         context.commit("REMOTE_TOKEN")

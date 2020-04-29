@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import router from '../router'
+import getMenList from '../store/router'
 import * as stores from '../store/methods'
 import {indexNav, updatePwd,downLoadImg} from '../api/request'
 export default {
@@ -104,7 +104,7 @@ export default {
     };
   },
  created(){
-    this.screenHeight = document.documentElement.clientHeight || document.body.clientHeight
+   this.screenHeight = document.documentElement.clientHeight || document.body.clientHeight
    this.userInfo = JSON.parse(this.$store.getters.get_yd_user_info);
    this.navList()
    var pathKey = sessionStorage.getItem("pathKey")
@@ -114,7 +114,6 @@ export default {
  },
  methods:{
     // 确定修改密码
-      
       // 退出登录
       loginOuts(){
         var _this=this;
@@ -155,13 +154,14 @@ export default {
       // 校验修改密码信息
       
       handleOpen(key, keyPath) {
-        console.log(key, keyPath);
+        // console.log(key, keyPath);
       },
       handleSelect(key, keyPath) {
-        sessionStorage.setItem("pathKey",key)
         var menuList = this.menuList;
+        sessionStorage.setItem("pathKey",key)
         // 解析url
         var urls = stores.getMenUrl(menuList,key)
+        sessionStorage.setItem("urls",urls)
         this.default_active_index = key;
 
         this.$router.push("/"+urls)
@@ -179,6 +179,11 @@ export default {
     },
  },
  mounted(){
+   getMenList().then(res => {
+     
+     this.$router.options.routes[1].children=res
+     this.$router.addRoutes(this.$router.options.routes);//调用addRoutes添加路由
+   })
    var _this = this
     window.onresize = function () {
       var clientWidth = document.documentElement.clientWidth || document.body.clientWidth

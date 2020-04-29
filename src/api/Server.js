@@ -21,8 +21,8 @@ export const Service = axios.create({
 // 添加请求拦截器
 Service.interceptors.request.use(config => {
   // 添加请求头部信息 token
-  if (localStorage.getItem('tokens')) {
-    config.headers.token = localStorage.getItem('tokens');
+  if (sessionStorage.getItem('tokens')) {
+    config.headers.token = sessionStorage.getItem('tokens');
   }
   loadingInstance = Loading.service({
     lock: true,
@@ -32,10 +32,8 @@ Service.interceptors.request.use(config => {
 })
 // 添加响应拦截器
 Service.interceptors.response.use(response => {
-  // console.log(response)
   if(response.data.code===401){
-    sessionStorage.removeItem('tokens')
-    localStorage.removeItem('tokens')
+    // stores.LOGIN_OUT();
     router.push({path:'/login'});
     Message({
       message: '网络错误' + response.data.msg,
