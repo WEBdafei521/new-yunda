@@ -218,8 +218,62 @@ var routers = [
       isLogin:true
     },
   },
+  // 查询统计
+    // 车辆加油明细查询
+  {
+    path: '/modules/yunda/oilCount',
+    name: 'modules/yunda/oilCount.html',
+    component: resolve => {require(['../page/modules/yunda/oilCount'], resolve)},
+    meta:{
+      isLogin:true
+    },
+  },
+    // 油站交易明细
+  {
+    path: '/modules/yunda/oilStationCount',
+    name: 'modules/yunda/oilStationCount.html',
+    component: resolve => {require(['../page/modules/yunda/oilStationCount'], resolve)},
+    meta:{
+      isLogin:true
+    },
+  },
+  // 司机加油统计表
+  {
+    path: '/modules/yunda/showExceltype1',
+    name: 'modules/yunda/showExcel.html?type=1',
+    component: resolve => {require(['../page/modules/yunda/showExceltype1'], resolve)},
+    meta:{
+      isLogin:true
+    },
+  },
+  // 车辆加油统计表
+  {
+    path: '/modules/yunda/showExceltype0',
+    name: 'modules/yunda/showExcel.html?type=0',
+    component: resolve => {require(['../page/modules/yunda/showExceltype0'], resolve)},
+    meta:{
+      isLogin:true
+    },
+  },
+  // 日报表
+  {
+    path: '/modules/yunda/showExcelSationDaytype0',
+    name: 'modules/yunda/showExcelSationDay.html?type=0',
+    component: resolve => {require(['../page/modules/yunda/showExcelSationDaytype0'], resolve)},
+    meta:{
+      isLogin:true
+    },
+  },
+  // 期间报
+  {
+    path: '/modules/yunda/showExcelSationtype1',
+    name: 'modules/yunda/showExcelSation.html?type=1',
+    component: resolve => {require(['../page/modules/yunda/showExcelSationtype1'], resolve)},
+    meta:{
+      isLogin:true
+    },
+  },
 
-  
   // 系统管理
   // 设备到期管理
   {
@@ -247,6 +301,42 @@ var routers = [
       isLogin:true
     },
     component:  resolve => {require(['../page/modules/gen/generator'], resolve)},
+  },
+  {
+    // 菜单管理
+    path: '/modules/sys/menu',
+    name:"modules/sys/menu.html",
+    meta:{
+      isLogin:true
+    },
+    component:  resolve => {require(['../page/modules/sys/menu'], resolve)},
+  },
+  {
+    // 支付信息管理
+    path: '/modules/payment/yfyspayment',
+    name:"modules/payment/yfyspayment.html",
+    meta:{
+      isLogin:true
+    },
+    component:  resolve => {require(['../page/modules/payment/yfyspayment'], resolve)},
+  },
+  {
+    // 系统日志
+    path: '/modules/sys/log',
+    name:"modules/sys/log.html",
+    meta:{
+      isLogin:true
+    },
+    component:  resolve => {require(['../page/modules/sys/log'], resolve)},
+  },
+  {
+    // 油品字典
+    path: '/modules/yunda/yfydoil',
+    name:"modules/yunda/yfydoil.html",
+    meta:{
+      isLogin:true
+    },
+    component:  resolve => {require(['../page/modules/yunda/yfydoil'], resolve)},
   },
 
   // 客户管理
