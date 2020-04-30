@@ -13,36 +13,36 @@
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="e3"
                   label="油站编号"
                   width="150">
                 </el-table-column>
                  <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="orgCode"
                   label="机构编号"
                   width="200">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="departname"
                   label="加油站名称"
                   width="250">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="attn"
                   label="联系人"
                   width="200">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="mobile"
                   label="手机号"
                   width="200">
                 </el-table-column>
-                 <el-table-column label="操作" width="250" className="animated slideInRight  delay-1s">
+                 <el-table-column label="操作" width="250" className="animated slideInRight  delay-.1s">
                    <template slot-scope="scope">
                      <el-button @click="updateInfo(scope.$index, scope.row)" type="primary">修改</el-button>  
                      <el-button v-if="scope.row.status == '1' " type="success" @click="updateStatusRow(scope.$index, scope.row)">停用</el-button>  

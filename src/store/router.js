@@ -405,7 +405,6 @@ export default function getMenList(){
           }
         }
       }
-      console.log(arrUrl)
       resolve (arrUrl)
     })
   })

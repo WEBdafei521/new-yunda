@@ -24,10 +24,10 @@ Service.interceptors.request.use(config => {
   if (sessionStorage.getItem('tokens')) {
     config.headers.token = sessionStorage.getItem('tokens');
   }
-  loadingInstance = Loading.service({
-    lock: true,
-    text: 'loading...'
-  })
+  // loadingInstance = Loading.service({
+  //   lock: true,
+  //   text: 'loading...'
+  // })
   return config
 })
 // 添加响应拦截器
@@ -41,7 +41,7 @@ Service.interceptors.response.use(response => {
       duration: 3 * 1000
     })
   }
-  loadingInstance.close()
+  // loadingInstance.close()
   return response.data
 }, error => {
   const msg = error.Message !== undefined ? error.Message : '';

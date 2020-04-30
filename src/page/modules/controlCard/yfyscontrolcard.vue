@@ -14,49 +14,49 @@
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="id"
                   label="ID"
                   max-width="60">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="lpn"
                   label="车牌号"
                   max-width="120">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="cardId"
                   label="卡号"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="username"
                   label="司机"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="oilName"
                   label="限加油品"
                   max-width="100">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="confinQty"
                   label="次限加油量(L)"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="frequency"
                   label="日限加油次数"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   label="操作"
                   width="200">
                   <template slot-scope="scope">

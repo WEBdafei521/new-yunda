@@ -13,37 +13,37 @@
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="username"
                   label="用户名称"
                   width="150">
                 </el-table-column>
                  <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="orgCode"
                   label="机构编号"
                   width="200">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="departName"
                   label="石油公司/油站"
                   width="250">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="roleName"
                   label="角色"
                   width="200">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="email"
                   label="邮箱"
                   width="250">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="status"
                   label="状态"
                   max-width="200">
@@ -52,7 +52,7 @@
                     <span class="label label-success" style="background:green;padding:6px;color:#fff;font-weight:600;" v-else>正常</span>
                   </template>
                 </el-table-column>
-                 <el-table-column label="操作" width="300" className="animated slideInRight  delay-1s">
+                 <el-table-column label="操作" width="300" className="animated slideInRight  delay-.1s">
                    <template slot-scope="scope">
                      <el-button @click="updateInfo(scope.$index, scope.row)" type="primary">修改</el-button>  
                      <el-button type="danger" @click="delectUser(scope.$index, scope.row)">删除</el-button>  

@@ -15,33 +15,33 @@
                 border
                 style="width: 100%">
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   fixed
                   prop="roleId"
                   label="角色ID"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="roleName"
                   label="角色名称"
                   max-width="150">
                 </el-table-column>
                 
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="createTime"
                   label="创建时间"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="remark"
                   label="备注"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   label="操作"
                   max-width="150">
                   <template slot-scope="scope">
@@ -71,11 +71,11 @@
                 <el-input v-model="ruleForm.roleName"></el-input>
               </el-form-item>
               <!-- 备注 -->
-               <el-form-item label="备注" prop="remark" class="animated slideInRight  delay-1s">
+               <el-form-item label="备注" prop="remark" class="animated slideInRight  delay-.1s">
                 <el-input type="textarea" v-model="ruleForm.remark"></el-input>
               </el-form-item>
 
-              <div class="l-quanxian animated slideInRight  delay-1s">
+              <div class="l-quanxian animated slideInRight  delay-.1s">
                 <div>
                   <el-tree
                     :data="data"

@@ -14,73 +14,73 @@
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="id"
                   label="ID"
                   max-width="60">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="lpn"
                   label="车牌号"
                   max-width="120">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="sim"
                   label="SIM卡号"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="devsn"
                   label="设备号"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="kmoil"
                   label="百公里油耗(L)"
                   max-width="100">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="createDate"
                   label="添加日期"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="updateDate"
                   label="修改日期"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="tankCapacity"
                   label="油箱容量(L)"
                   max-width="100">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="oilName"
                   label="油品"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="vin"
                   label="车架号"
                   max-width="120">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="engine"
                   label="发动机号"
                   max-width="120">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   label="操作"
                   width="200">
                   <template slot-scope="scope">

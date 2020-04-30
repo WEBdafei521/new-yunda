@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <div>
-      <div class="animated slideInRight  delay-1s">
+      <div class="animated bounce delay-.5s">
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
           <el-tab-pane label="加油站列表" name="OliList" class=""> 
             <div class="l-display">
@@ -14,37 +14,37 @@
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  
                   prop="e3"
                   label="部门编号"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  
                   prop="orgCode"
                   label="机构编号"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  
                   prop="departname"
                   label="部门名称"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  
                   prop="attn"
                   label="联系人"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  
                   prop="mobile"
                   label="手机号"
                   max-width="150">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  
                   prop="zip"
                   label="状态"
                   max-width="150">
@@ -54,7 +54,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  
                   label="操作"
                   max-width="150">
                   <template slot-scope="scope">
@@ -81,37 +81,37 @@
           <el-tab-pane :label="oilType" name="addList">
             <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
               <!-- 部门编号 -->
-              <el-form-item label="部门编号" prop="e3" class="animated slideInRight  delay-.1s">
+              <el-form-item label="部门编号" prop="e3" class="">
                 <el-input disabled value="000001" v-model="ruleForm.e3"></el-input>
               </el-form-item>
               <!-- 部门名称 -->
-              <el-form-item label="部门名称" prop="departname" class="animated slideInRight  delay-.1s">
+              <el-form-item label="部门名称" prop="departname" class="">
                 <el-input v-model="ruleForm.departname"></el-input>
               </el-form-item>
               <!-- 部门名称 -->
-              <el-form-item label="简称" prop="deptabbr" class="animated slideInRight  delay-.1s">
+              <el-form-item label="简称" prop="deptabbr" class="">
                 <el-input v-model="ruleForm.deptabbr"></el-input>
               </el-form-item>
               <!-- 联系人 -->
-              <el-form-item label="联系人" prop="attn" class="animated slideInRight  delay-.1s">
+              <el-form-item label="联系人" prop="attn" class="">
                 <el-input v-model="ruleForm.attn"></el-input>
               </el-form-item>
               <!-- 手机号 -->
-              <el-form-item label="手机号" prop="mobile" class="animated slideInRight  delay-.1s">
+              <el-form-item label="手机号" prop="mobile" class="">
                 <el-input v-model.number="ruleForm.mobile"></el-input>
               </el-form-item>
               <!-- 电子邮箱 -->
-              <el-form-item label="电子邮箱" prop="email" class="animated slideInRight  delay-.1s">
+              <el-form-item label="电子邮箱" prop="email" class="">
                 <el-input v-model="ruleForm.email"></el-input>
               </el-form-item>
               <!-- 日期选择 -->
-              <el-form-item label="到期时间" class="animated slideInRight  delay-.1s">
+              <el-form-item label="到期时间" class="">
                 <el-col >
                   <el-date-picker type="date" placeholder="选择日期" picker-options="pickerOptions"  format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd HH:mm:ss" v-model="ruleForm.servicedate" style="width: 100%;"></el-date-picker>
                 </el-col>
               </el-form-item>
               <!-- 省 -->
-              <el-form-item label="省份" class="animated slideInRight  delay-.1s">
+              <el-form-item label="省份" class="">
                 <el-col >
                   <el-select v-model="provinceValue" placeholder="请选择" @change="onProvinceChange">
                     <el-option
@@ -124,7 +124,7 @@
                 </el-col>
               </el-form-item>
               <!-- 县 -->
-              <el-form-item label="县" class="animated slideInRight  delay-.1s">
+              <el-form-item label="县" class="">
                 <el-col >
                   <el-select v-model="cityValue" placeholder="请选择" @change="onCityChange">
                     <el-option
@@ -137,11 +137,11 @@
                 </el-col>
               </el-form-item>
               <!-- 活动形式 -->
-               <el-form-item label="详细地址" prop="address" class="animated slideInRight  delay-.1s">
+               <el-form-item label="详细地址" prop="address" class="">
                 <el-input type="textarea" v-model="ruleForm.address"></el-input>
               </el-form-item>
               <!-- 上传logo -->
-              <el-form-item label="logo" class="animated slideInRight  delay-.1s">
+              <el-form-item label="logo" class="">
                 <el-upload
                   class="avatar-uploader"
                   :action="url.uploadActionUrl"
@@ -156,7 +156,7 @@
                 </el-upload>
 						  </el-form-item>
               <!-- 备注 -->
-               <el-form-item label="备注" prop="notes" class="animated slideInRight  delay-.1s">
+               <el-form-item label="备注" prop="notes" class="">
                 <el-input type="textarea" v-model="ruleForm.notes"></el-input>
               </el-form-item>
 

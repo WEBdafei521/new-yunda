@@ -15,20 +15,20 @@
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="username"
                   label="司机名称"
                   max-width="200">
                 </el-table-column>
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="mobile"
                   label="手机号"
                   max-width="200">
                 </el-table-column>
                
                 <el-table-column
-                  className="animated slideInRight  delay-1s"
+                  className="animated slideInRight  delay-.1s"
                   prop="zip"
                   label="操作"
                   max-width="200">
