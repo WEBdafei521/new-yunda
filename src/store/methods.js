@@ -231,6 +231,7 @@ export function getMenuTrees(){
           }
         }
       }
+      console.log(arr)
       resolve(arr);
       
     })  

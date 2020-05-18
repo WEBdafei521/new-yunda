@@ -28,12 +28,7 @@
               <div @click="openClose" class="l-main-title-close " style="fontSize:21px;">
                 <i class="el-icon-s-fold"></i>
               </div>
-              <div>
-                <el-breadcrumb separator="/">
-                  <el-breadcrumb-item :to="{ path: '/' }"> <span :style="{color:isWhite?'#333333':'#ffffff'}">首页</span> </el-breadcrumb-item>
-                  <el-breadcrumb-item class="animated bounce delay-.5s" v-for="(item,index) of historyUrlListNow" :key="index"> <span :style="{color:isWhite?'#333333':'#ffffff'}">{{item.name}}</span></el-breadcrumb-item>
-                </el-breadcrumb>
-              </div>
+          
               
             </div>
             <!-- 用户的信息 -->
@@ -78,9 +73,10 @@
           </div>
 
           <!-- 历史标签 -->
-          <div style="height:30px;" class="l-title-url l-color-back-white" :class="isWhite==true?'l-is-white l-history-url-white':'l-history-url-block'">
-            <div v-for="(item,index) of historyUrlList" :key="index" class="l-histroy-item" :class="isWhite==true?(idx==index?'l-histroy-item-active l-histroy-item-white':'l-histroy-item-white'):(idx == index?'l-histroy-item-active l-histroy-item-block':'l-histroy-item-block')">
+          <div style="height:30px;display: flex; align-items: center;" class="l-title-url" :class="isWhite==true?'l-is-white l-history-url-white':'l-history-url-block'">
+            <div v-for="(item,index) of historyUrlList" @click="select_histroy_label(item,index)" :key="index" class="l-histroy-item" :class="isWhite==true?(idx==index?'l-histroy-item-active l-histroy-item-white':'l-histroy-item-white'):(idx == index?'l-histroy-item-active l-histroy-item-block':'l-histroy-item-block')">
               {{item.name}}
+             <i class="el-icon-close l-icon-del" @click.stop="del_histroy_label(item,index)"></i>
             </div>
           </div>
 
@@ -109,7 +105,6 @@ export default {
     return {
       isCollapse: false,
       isWhite:true,
-      historyUrlListNow:[],
       // 历史标签
       historyUrlList:[
         {
@@ -142,6 +137,26 @@ export default {
    }
  },
  methods:{
+      select_histroy_label(item,index){
+        var menuList = this.menuList
+        this.default_active_index = item.indexs
+        var urls = stores.getMenUrl(menuList,item.indexs)
+        this.idx = index;
+        this.$router.push({path:'/'+urls})
+      },
+      del_histroy_label(item,index){
+        
+        if(index==0){
+
+        }else{
+          this.default_active_index = this.historyUrlList[index-1].indexs
+          var menuList = this.menuList
+          this.historyUrlList.splice(index,1)
+          var urls = stores.getMenUrl(menuList,this.historyUrlList[index-1].indexs)
+          this.idx = index-1
+          this.$router.push({path:'/'+urls})
+        }
+      },
     // 确定修改密码
       // 退出登录
       loginOuts(){
@@ -212,15 +227,8 @@ export default {
                 }
               }
             }
-            if(items.indexs == key && items.indexs != "0-0"){
-              historyListNow.push(item)
-              historyListNow.push(items)
-            }
           })
         }
-        // 顶部title当前的所在位置
-        this.historyUrlListNow = historyListNow
-
         
       },
    // 请求菜单数据
@@ -309,7 +317,6 @@ export default {
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    
   }
   .l-title-white{
     justify-content: space-between;
@@ -329,13 +336,13 @@ export default {
     padding:0 4px;
     border-left: 10px solid #7d8185;
     border-right: 10px solid #7d8185;
-    overflow-x: scroll ;
   }
   .l-histroy-item{
     height: 22px;
     margin-right: 4px;
-    padding: 0 8px;
+    padding: 0 0 0 8px;
     font-size: 12px;
+    cursor: pointer;
     line-height: 22px;
     transition: all .5s;
     display: flex;
@@ -345,6 +352,16 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .l-icon-del{
+    transition:  all .5s;
+    opacity: 0;
+    margin:0 1px;
+    cursor: pointer;
+  }
+  .l-icon-del:hover{
+    opacity: 1;
+  }
+
   .l-histroy-item-active{
     background-color: #42b983;
     color: #fff;

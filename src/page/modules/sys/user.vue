@@ -257,7 +257,6 @@ export default {
     selectDepart(e){
       var index = e.length-1
       this.ruleForm.orgCode = e[index];
-
     },
     getRoleLists(){
       getRoleList().then(res =>{

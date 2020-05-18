@@ -3,6 +3,9 @@
   <div>
     <div class="l-main-map">
       <div id="allmap" style="width:100%;" :style="{height:screenHeight-53+'px'}"></div>
+      <div class="l-main-top">
+        <!-- <echartsGL></echartsGL> -->
+      </div>
     </div>
   </div>
 </template>
@@ -10,8 +13,11 @@
 <script>
 import * as store from '../store/methods'
 import {mainInfo} from '../api/request'
+import particles from '../components/Li-index-echarts'
 export default {
-  components: {},
+  components: {
+    echartsGL:particles
+  },
   data () {
     return {
       screenHeight: document.documentElement.clientHeight || document.body.clientHeight,// 屏幕高度
@@ -87,7 +93,18 @@ export default {
 }
 </script>
 <style scoped>
-.l-main-map{
+  .l-main-map{
+    position: relative;
+  }
+  .l-main-top{
+    width:150px;
+    height:200px;
+    bottom:30px;
+    left:30px;
+    position:absolute;
+    z-index:9999;
+    border:1px solid blue;
+   
   }
   #allmap{
     height: 100vh;

@@ -41,6 +41,13 @@ Service.interceptors.response.use(response => {
       duration: 3 * 1000
     })
   }
+  if(response.data.code===500){
+    Message({
+      message:  response.data.msg,
+      type: 'error',
+      duration: 3 * 1000
+    })
+  }
   // loadingInstance.close()
   return response.data
 }, error => {
