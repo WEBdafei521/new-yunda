@@ -1,6 +1,11 @@
-admin 0fz4IfUBtfxeWf1A
-nyouz01    密码000000
-chedui@yunfeiyang.com  zZiqV7ejramCJ320
+云达后台管理中心
+       admin 0fz4IfUBtfxeWf1A  
+       nyouz01    密码000000
+云达司机端 微信公众平台账号
+       chedui@yunfeiyang.com  zZiqV7ejramCJ320
+云达加油站云太守管理官 微信公众平台账号
+       laizy@yunfeiyang.com  410823ab
+
 
 1框架
 2vue框架的好处

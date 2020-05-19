@@ -3,9 +3,9 @@
   <div>
     <div class="l-main-map">
       <div id="allmap" style="width:100%;" :style="{height:screenHeight-53+'px'}"></div>
-      <div class="l-main-top">
-        <!-- <echartsGL></echartsGL> -->
-      </div>
+      <!-- <div class="l-main-top">
+        <echartsGL></echartsGL>
+      </div> -->
     </div>
   </div>
 </template>
